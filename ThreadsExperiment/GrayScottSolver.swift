@@ -21,13 +21,12 @@ struct GrayScottParmeters {
     var dV : Double
 }
 
+private let solverDispatchQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
+private let sem = dispatch_semaphore_create(0)
 
-func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScottParmeters)->[GrayScottStruct] {
-    let startTime : CFAbsoluteTime = CFAbsoluteTimeGetCurrent();
-    
-    var index : Int = 0;
-    var outputArray = grayScottConstData // Copy to get array big enough
-    for i in 0 ..< Constants.LENGTH
+private func grayScottSolverInternal(grayScottConstData: [GrayScottStruct], parameters:GrayScottParmeters, inout outputArray:[GrayScottStruct], start:Int, end:Int, completion: ()->()) {
+    let initialIndex = start * Constants.LENGTH
+    for i in start..<end
     {
         for j in 0 ..< Constants.LENGTH
         {
@@ -48,12 +47,34 @@ func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScott
             
             //outputArray.append(outputPixel)
             
-            outputArray[index++] = outputPixel;
+            outputArray[i * Constants.LENGTH + j - initialIndex] = outputPixel;
         }
     }
+    completion()
+}
 
+func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScottParmeters)->[GrayScottStruct] {
+    let startTime : CFAbsoluteTime = CFAbsoluteTimeGetCurrent();
     
-    println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime));
+    let splitPoint = Constants.LENGTH / 2
+    var outputArray0:[GrayScottStruct] = map(grayScottConstData[0..<(splitPoint * Constants.LENGTH)]) { $0 } // Copy to get array big enough
+    var outputArray1 = outputArray0 // Another one to dispatch
+    //    let sem = dispatch_semaphore_create(0)
     
+    dispatch_async(solverDispatchQueue) {
+        grayScottSolverInternal(grayScottConstData, parameters, &outputArray0, 0, splitPoint) { dispatch_semaphore_signal(sem); return }
+    }
+    dispatch_async(solverDispatchQueue) {
+        grayScottSolverInternal(grayScottConstData, parameters, &outputArray1, splitPoint, Constants.LENGTH) { dispatch_semaphore_signal(sem); return }
+    }
+    print("dispatched")
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
+    print("SEM 1")
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER)
+    print("SEM 2")
+    //    dispatch_release(sem)
+
+    println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime))
+    let outputArray = outputArray0 + outputArray1
     return outputArray
 }

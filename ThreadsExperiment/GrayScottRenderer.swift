@@ -11,7 +11,7 @@ import UIKit
 
 
 
-func renderGrayScott(grayScottData:[GrayScottStruct])->UIImage
+func renderGrayScott(grayScottData:GrayScottData)->UIImage
 {
     let startTime : CFAbsoluteTime = CFAbsoluteTimeGetCurrent();
     

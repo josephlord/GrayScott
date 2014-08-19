@@ -21,12 +21,36 @@ struct GrayScottParmeters {
     var dV : Double
 }
 
+public class GrayScottData {
+    private var gsData:[GrayScottStruct]
+    init() {
+        gsData = [GrayScottStruct]()
+        for i in 0..<(Constants.LENGTH * Constants.LENGTH) {
+            gsData.append(GrayScottStruct(u: 0, v: 0))
+        }
+    }
+    init(data:[GrayScottStruct]){
+        gsData = data
+    }
+    
+    subscript(index: Int) -> GrayScottStruct {
+        get {
+            return gsData[index]
+        }
+        set(newValue) {
+            gsData[index] = newValue
+        }
+    }
+    func dup()->GrayScottData {
+        return GrayScottData(data: gsData)
+    }
+}
 
-func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScottParmeters)->[GrayScottStruct] {
+
+func grayScottSolver(grayScottConstData: GrayScottData, parameters:GrayScottParmeters, outputData:GrayScottData) {
     let startTime : CFAbsoluteTime = CFAbsoluteTimeGetCurrent();
     
     var index : Int = 0;
-    var outputArray = grayScottConstData // Copy to get array big enough
     for i in 0 ..< Constants.LENGTH
     {
         for j in 0 ..< Constants.LENGTH
@@ -44,16 +68,17 @@ func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScott
             let deltaU : Double = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
             let deltaV : Double = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
             
-            let outputPixel = GrayScottStruct(u: (thisPixel.u + deltaU).clip(), v: (thisPixel.v + deltaV).clip())
+            outputData[index].u = (thisPixel.u + deltaU).clip()
+            outputData[index].v = (thisPixel.v + deltaV).clip()
+            ++index
+            //let outputPixel = GrayScottStruct(u: (thisPixel.u + deltaU).clip(), v: (thisPixel.v + deltaV).clip())
             
             //outputArray.append(outputPixel)
             
-            outputArray[index++] = outputPixel;
+            //outputData[index++] = outputPixel;
         }
     }
 
     
     println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime));
-    
-    return outputArray
 }

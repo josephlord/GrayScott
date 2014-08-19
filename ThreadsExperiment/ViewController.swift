@@ -23,7 +23,7 @@ class ViewController: UIViewController
     var dU : Double = 0.16;
     var dV : Double = 0.08;
 
-    var grayScottData:[GrayScottStruct] = {
+    var grayScottData:GrayScottData = {
             var data = [GrayScottStruct]()
             for i in 0..<Constants.LENGTH_SQUARED
             {
@@ -39,8 +39,9 @@ class ViewController: UIViewController
                     }
                 }
             }
-            return data
+            return GrayScottData(data: data)
         }()
+    var nextGrayScottData:GrayScottData = GrayScottData()
 
 
     override func viewDidLoad()
@@ -106,13 +107,16 @@ class ViewController: UIViewController
     
     private func dispatchSolverOperation()
     {
-        let dataCopy = grayScottData
+        let currentGSD = grayScottData
+        let nextGSD = nextGrayScottData
         let params = GrayScottParmeters(f: f, k: k, dU: dU, dV: dV)
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
-            let newGSData = grayScottSolver(dataCopy, params)
-            let newImage = renderGrayScott(newGSData)
+            grayScottSolver(currentGSD, params, nextGSD)
+            let newImage = renderGrayScott(nextGSD)
             dispatch_async(dispatch_get_main_queue()) {
-                self.grayScottData = newGSData
+                let gsdTmp = self.grayScottData
+                self.grayScottData = self.nextGrayScottData
+                self.nextGrayScottData = gsdTmp // Recycle the array object
                 self.imageView.image = newImage
                 self.dispatchSolverOperation()
             }

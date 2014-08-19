@@ -111,7 +111,7 @@ class ViewController: UIViewController
         let nextGSD = nextGrayScottData
         let params = GrayScottParmeters(f: f, k: k, dU: dU, dV: dV)
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
-            grayScottSolver(currentGSD, params, nextGSD)
+            grayScottSolver(currentGSD.rawArray(), params, nextGSD)
             let newImage = renderGrayScott(nextGSD)
             dispatch_async(dispatch_get_main_queue()) {
                 let gsdTmp = self.grayScottData

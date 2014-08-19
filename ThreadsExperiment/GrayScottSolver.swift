@@ -44,10 +44,13 @@ public class GrayScottData {
     func dup()->GrayScottData {
         return GrayScottData(data: gsData)
     }
+    func rawArray()->[GrayScottStruct] {
+        return gsData
+    }
 }
 
 
-func grayScottSolver(grayScottConstData: GrayScottData, parameters:GrayScottParmeters, outputData:GrayScottData) {
+func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScottParmeters, outputData:GrayScottData) {
     let startTime : CFAbsoluteTime = CFAbsoluteTimeGetCurrent();
     
     var index : Int = 0;

@@ -105,6 +105,11 @@ class ViewController: UIViewController
         }
     }
     
+    private let queue0 = dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
+    private let queue1 = dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
+    private let semaphore0 = dispatch_semaphore_create(0)
+    private let semaphore1 = dispatch_semaphore_create(0)
+    
     private var lastFrameCountTime = NSDate()
     private var frameCount = 0
     private func dispatchSolverOperation()
@@ -112,18 +117,22 @@ class ViewController: UIViewController
         let dataCopy = grayScottData
         let params = GrayScottParmeters(f: f, k: k, dU: dU, dV: dV)
         weak var weakSelf = self
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
+        dispatch_async(queue0) {
             let newGSData = grayScottSolver(dataCopy, params)
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
+            dispatch_semaphore_wait(semaphore0, DISPATCH_TIME_FOREVER)
             let newImage = renderGrayScott(newGSData)
             dispatch_async(dispatch_get_main_queue()) {
                 if let s = weakSelf {
+                    s.dispatchSolverOperation()
                     s.grayScottData = newGSData
                     s.imageView.image = newImage
-                    s.dispatchSolverOperation()
-                    if s.lastFrameCountTime.timeIntervalSinceNow < -1.0 {
-                        println("Frame count = \(s.frameCount)")
+                    if s.frameCount == 128 {
+                        let now = NSDate()
+                        let interval = now.timeIntervalSinceDate(s.lastFrameCountTime)
+                        println("\(128 / interval)fps")
+                        s.lastFrameCountTime = now
                         s.frameCount = 0
-                        s.lastFrameCountTime = NSDate()
                     }
                     ++s.frameCount
                 }

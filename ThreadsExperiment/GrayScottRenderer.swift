@@ -70,7 +70,7 @@ func renderGrayScott(grayScottData:[GrayScottStruct])->UIImage
     }
     let outputImage = imageFromARGB32Bitmap(pixelArray, UInt(Constants.LENGTH), UInt(Constants.LENGTH))
     if stats {
-        println(" R RENDER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!));
+        //   println(" R RENDER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!));
     }
     ++statsCount
     return outputImage

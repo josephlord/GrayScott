@@ -48,15 +48,8 @@ class ViewController: UIViewController
     override func viewDidLoad()
     {
         
-        let timer = NSTimer.scheduledTimerWithTimeInterval(0.025, target: self, selector: Selector("timerHandler"), userInfo: nil, repeats: true);
-        
         updateLabel();
         dispatchSolverOperation()
-    }
-
-    func timerHandler()
-    {
-        //self.dispatchSolverOperation()
     }
     
     @IBAction func sliderValueChangeHandler(sender: AnyObject)
@@ -86,7 +79,7 @@ class ViewController: UIViewController
     
     private func updateLabel()
     {
-        switch parameterButtonBar.selectedSegmentIndex
+ /*       switch parameterButtonBar.selectedSegmentIndex
         {
             case 0:
                 parameterValueLabel.text = "f = " + f.format();
@@ -102,7 +95,7 @@ class ViewController: UIViewController
                 parameterSlider.value = Float(dV);
             default:
                 parameterValueLabel.text = "";
-        }
+        }*/
     }
     
     private var lastFrameCountTime = NSDate()
@@ -121,7 +114,8 @@ class ViewController: UIViewController
                     s.imageView.image = newImage
                     s.dispatchSolverOperation()
                     if s.lastFrameCountTime.timeIntervalSinceNow < -1.0 {
-                        println("Frame count = \(s.frameCount)")
+                        print("Frame count = ")
+                        println(s.frameCount)
                         s.frameCount = 0
                         s.lastFrameCountTime = NSDate()
                     }

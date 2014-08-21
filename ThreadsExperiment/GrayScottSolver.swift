@@ -24,9 +24,9 @@ struct GrayScottParmeters {
 private var solverstatsCount = 0
 func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScottParmeters)->[GrayScottStruct] {
     let stats = solverstatsCount % 1024 == 0
-    var startTime : CFAbsoluteTime?
+    var startTime : NSDate?
     if stats {
-        startTime = CFAbsoluteTimeGetCurrent();
+        startTime = NSDate();
     }
     
     var index : Int = 0;
@@ -57,7 +57,8 @@ func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScott
     }
 
     if stats {
-        println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!));
+        print("Solve")
+        println(-startTime!.timeIntervalSinceNow)
     }
     ++solverstatsCount
     return outputArray

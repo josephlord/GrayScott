@@ -65,7 +65,7 @@ class GSWindowController: NSWindowController {
                         
                             s.grayScottData = data
                             s.imageView.image = imageFromARGB32Bitmap(pixelData, UInt(Constants.LENGTH), UInt(Constants.LENGTH))
-                            if CFAbsoluteTimeGetCurrent() - lastFrameCountTime > 1.0 {
+                            if CFAbsoluteTimeGetCurrent() - lastFrameCountTime > 5.0 {
                                 println("Frame count = \(frameCount) Solve count: \(solveCount)")
                                 frameCount = 0
                                 solveCount = 0

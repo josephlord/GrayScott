@@ -8,10 +8,10 @@
 
 import Cocoa
 
-public let solverQueues = 8
+public let solverQueues = 3
 public struct Constants
 {
-    static let LENGTH : Int = 256
+    static let LENGTH : Int = 4096
     static let LENGTH_MINUS_ONE : Int = LENGTH - 1
     static let LENGTH_SQUARED : Int = LENGTH * LENGTH
 }

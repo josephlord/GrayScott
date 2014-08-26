@@ -31,8 +31,7 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
     
     let semaphore = dispatch_semaphore_create(0)
     //var queues
-    var outputArray = [GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
-    var outputPixels = [PixelData](count: grayScottConstData.count, repeatedValue: PixelData(a: 255, r:0, g: 0, b: 0))
+    
     
     //let queue = dispatch_queue_create("com.humanfriendly.grayscottsolver",  DISPATCH_QUEUE_CONCURRENT)
     let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
@@ -42,7 +41,9 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
     sectionIndexes[solverQueues] = Constants.LENGTH
     
     for i in 0..<solverQueues {
-            dispatch_async(queue) {
+        var outputArray = grayScottConstData // Copy for modify
+        var outputPixels = [PixelData](count: grayScottConstData.count, repeatedValue: PixelData(a: 255, r:0, g: 0, b: 0))
+        dispatch_async(queue) {
             grayScottPartialSolver(grayScottConstData, parameters, sectionIndexes[i], sectionIndexes[i + 1], &outputArray, &outputPixels)
             dispatch_semaphore_signal(semaphore)
         }
@@ -55,8 +56,8 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
         println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!));
     }
     ++solverstatsCount
-    
-    return (outputArray, outputPixels)
+    var outputPixels = [PixelData](count: grayScottConstData.count, repeatedValue: PixelData(a: 255, r:0, g: 0, b: 0))
+    return (grayScottConstData, outputPixels)
 }
 
 private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: [GrayScottStruct], inout outputPixels:[PixelData]) {

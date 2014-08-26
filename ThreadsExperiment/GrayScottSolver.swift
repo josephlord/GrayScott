@@ -20,6 +20,20 @@ public struct GrayScottParameters {
     public var dV : Double
 }
 
+private class SolverSection {
+    private let startLine:Int
+    private let endLine:Int
+    private var gsSectionData:[GrayScottStruct]?
+    private var pixelSectionData:[PixelData]?
+    init(startLine:Int, endLine:Int) {
+        self.startLine = startLine
+        self.endLine = endLine
+     /*   let items = (endLine - startLine) * Constants.LENGTH
+        gsSectionData = [GrayScottStruct](count: items, repeatedValue: GrayScottStruct(u: 0, v: 0))
+        pixelSectionData = [PixelData](count: items, repeatedValue:PixelData(a: 0, r:0, g: 0, b: 0)) */
+    }
+}
+
 private var solverstatsCount = 0
 public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScottParameters)->([GrayScottStruct],[PixelData]) {
     
@@ -31,8 +45,6 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
     
     let semaphore = dispatch_semaphore_create(0)
     //var queues
-    var outputArray = [GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
-    var outputPixels = [PixelData](count: grayScottConstData.count, repeatedValue: PixelData(a: 255, r:0, g: 0, b: 0))
     
     //let queue = dispatch_queue_create("com.humanfriendly.grayscottsolver",  DISPATCH_QUEUE_CONCURRENT)
     let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
@@ -40,10 +52,13 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
     let sectionSize:Int = Constants.LENGTH/solverQueues
     var sectionIndexes = map(0...solverQueues) { Int($0 * sectionSize) }
     sectionIndexes[solverQueues] = Constants.LENGTH
+    var sections = [SolverSection]()
     
     for i in 0..<solverQueues {
+            let section = SolverSection(startLine: sectionIndexes[i], endLine: sectionIndexes[i+1])
+            sections.append(section)
             dispatch_async(queue) {
-            grayScottPartialSolver(grayScottConstData, parameters, sectionIndexes[i], sectionIndexes[i + 1], &outputArray, &outputPixels)
+            grayScottPartialSolver(grayScottConstData, parameters, section)
             dispatch_semaphore_signal(semaphore)
         }
     }
@@ -55,20 +70,46 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
         println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!));
     }
     ++solverstatsCount
+    /*
+    return reduce(sections, ([GrayScottStruct](), [PixelData]())) {
+        return ($0.0 + $1.gsSectionData!, $0.1 + $1.pixelSectionData!)
+    }*/
+    var outputGSData = [GrayScottStruct](count: Constants.LENGTH_SQUARED, repeatedValue: GrayScottStruct(u: 0, v: 0))
+    var outputPixData = [PixelData](count: Constants.LENGTH_SQUARED, repeatedValue: PixelData(a: 0, r: 0, g: 0, b: 0))
+    var gsIndex = 0
+    var pixIndex = 0
+    for section in sections  {
+        for gss in section.gsSectionData! {
+            outputGSData[gsIndex++] = gss
+        }
+        for pds in section.pixelSectionData! {
+            outputPixData[pixIndex] = pds
+        }
+    }
     
-    return (outputArray, outputPixels)
+    if stats {
+        println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!));
+    }
+    
+    return (outputGSData, outputPixData)
 }
 
-private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: [GrayScottStruct], inout outputPixels:[PixelData]) {
+private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], parameters: GrayScottParameters, section:SolverSection) {
     
-    assert(startLine >= 0)
-    assert(endLine <= Constants.LENGTH)
-    assert(outputArray.count == Constants.LENGTH_SQUARED)
+    assert(section.startLine >= 0)
+    assert(section.endLine <= Constants.LENGTH)
+    //assert(outputArray.count == Constants.LENGTH_SQUARED)
     assert(grayScottConstData.count == Constants.LENGTH_SQUARED)
     
-    var index : Int = startLine * Constants.LENGTH
+    var index : Int = section.startLine * Constants.LENGTH
     
-    for i in startLine ..< endLine
+    let items = (section.endLine - section.startLine) * Constants.LENGTH
+    var gsSectionData = [GrayScottStruct](count: items, repeatedValue: GrayScottStruct(u: 0, v: 0))
+    var pixelSectionData = [PixelData](count: items, repeatedValue:PixelData(a: 0, r:0, g: 0, b: 0))
+    
+    let arrayPosition = section.startLine * Constants.LENGTH
+    //println("startline: \(section.startLine), endline: \(section.endLine)")
+    for i in section.startLine..<section.endLine
     {
         for j in 0 ..< Constants.LENGTH
         {
@@ -88,12 +129,17 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
             let outputDataCell = GrayScottStruct(u: (thisPixel.u + deltaU).clip(), v: (thisPixel.v + deltaV).clip())
             
             let u_I = UInt8(outputDataCell.u * 255)
-            outputPixels[index].r = u_I
-            outputPixels[index].g = u_I
-            outputPixels[index].b = UInt8(outputDataCell.v * 255)
+            let outputPos = index - arrayPosition
+            pixelSectionData[outputPos].r = u_I
+            pixelSectionData[outputPos].g = u_I
+            pixelSectionData[outputPos].b = UInt8(outputDataCell.v * 255)
             
-            
-            outputArray[index++] = outputDataCell
+            gsSectionData[outputPos] = outputDataCell
+            ++index
         }
+        //print("\(i),")
     }
+    section.gsSectionData = gsSectionData
+    section.pixelSectionData = pixelSectionData
+    //print("&")
 }

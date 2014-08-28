@@ -68,7 +68,8 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
     
     var index : Int = startLine * Constants.LENGTH
     
-    for i in startLine ..< endLine
+    // First and last lines
+    for i in [startLine, endLine - 1]
     {
         for j in 0 ..< Constants.LENGTH
         {
@@ -96,4 +97,33 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
             outputArray[index++] = outputDataCell
         }
     }
+    for j in [0,Constants.LENGTH_MINUS_ONE]
+    {
+        for i in (startLine+1)..<(endLine-1)
+        {
+            let thisPixel = grayScottConstData[i * Constants.LENGTH + j]
+            let northPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
+            let southPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
+            let eastPixel = grayScottConstData[(i - 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            let westPixel = grayScottConstData[(i + 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            
+            let laplacianU = northPixel.u + southPixel.u + westPixel.u + eastPixel.u - (4.0 * thisPixel.u);
+            let laplacianV = northPixel.v + southPixel.v + westPixel.v + eastPixel.v - (4.0 * thisPixel.v);
+            let reactionRate = thisPixel.u * thisPixel.v * thisPixel.v;
+            
+            let deltaU : Double = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
+            let deltaV : Double = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
+            
+            let outputDataCell = GrayScottStruct(u: (thisPixel.u + deltaU).clip(), v: (thisPixel.v + deltaV).clip())
+            
+            let u_I = UInt8(outputDataCell.u * 255)
+            outputPixels[index].r = u_I
+            outputPixels[index].g = u_I
+            outputPixels[index].b = UInt8(outputDataCell.v * 255)
+            
+            
+            outputArray[index++] = outputDataCell
+        }
+    }
+    
 }

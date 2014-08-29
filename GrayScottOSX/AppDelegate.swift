@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public let solverQueues = 1
+public let solverQueues = 16
 public struct Constants
 {
     static let LENGTH : Int = 256

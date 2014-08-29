@@ -27,11 +27,7 @@ extension Int
     }
     func wrapBottom(max : Int) -> Int
     {
-        if self < 0
-        {
-            return max;
-        }
-        else if self > max
+        if self > max
         {
             return 0
         }
@@ -47,10 +43,6 @@ extension Int
         {
             return max;
         }
-        else if self > max
-        {
-            return 0
-        }
         else
         {
             return self;
@@ -63,10 +55,6 @@ extension Int
         {
             return max;
         }
-        else if self > max
-        {
-            return 0
-        }
         else
         {
             return self;
@@ -75,11 +63,7 @@ extension Int
     
     func wrapRight(max : Int) -> Int
     {
-        if self < 0
-        {
-            return max;
-        }
-        else if self > max
+        if self > max
         {
             return 0
         }

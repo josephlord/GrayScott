@@ -105,8 +105,8 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
         {
             let index = i * Constants.LENGTH + j
             let thisPixel = grayScottConstData[index]
-            let eastPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let westPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
+            let eastPixel = grayScottConstData[index + 1]
+            let westPixel = grayScottConstData[index - 1]
             let northPixel = grayScottConstData[(i - 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
             let southPixel = grayScottConstData[(i + 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
             

@@ -71,10 +71,10 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
         for j in 0 ..< Constants.LENGTH
         {
             let thisPixel = grayScottConstData[i * Constants.LENGTH + j]
-            let northPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let southPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let eastPixel = grayScottConstData[(i - 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
-            let westPixel = grayScottConstData[(i + 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            let northPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrapRight(Constants.LENGTH_MINUS_ONE)]
+            let southPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrapLeft(Constants.LENGTH_MINUS_ONE)]
+            let eastPixel = grayScottConstData[(i - 1).wrapTop(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            let westPixel = grayScottConstData[(i + 1).wrapBottom(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
             
             let laplacianU = northPixel.u + southPixel.u + westPixel.u + eastPixel.u - (4.0 * thisPixel.u);
             let laplacianV = northPixel.v + southPixel.v + westPixel.v + eastPixel.v - (4.0 * thisPixel.v);

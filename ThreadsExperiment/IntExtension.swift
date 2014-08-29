@@ -25,4 +25,68 @@ extension Int
             return self; 
         }
     }
+    func wrapBottom(max : Int) -> Int
+    {
+        if self < 0
+        {
+            return max;
+        }
+        else if self > max
+        {
+            return 0
+        }
+        else
+        {
+            return self;
+        }
+    }
+    
+    func wrapLeft(max : Int) -> Int
+    {
+        if self < 0
+        {
+            return max;
+        }
+        else if self > max
+        {
+            return 0
+        }
+        else
+        {
+            return self;
+        }
+    }
+
+    func wrapTop(max : Int) -> Int
+    {
+        if self < 0
+        {
+            return max;
+        }
+        else if self > max
+        {
+            return 0
+        }
+        else
+        {
+            return self;
+        }
+    }
+    
+    func wrapRight(max : Int) -> Int
+    {
+        if self < 0
+        {
+            return max;
+        }
+        else if self > max
+        {
+            return 0
+        }
+        else
+        {
+            return self;
+        }
+    }
+
 }

@@ -15,6 +15,8 @@ import Foundation
 import UIKit
 import CoreImage
 
+var solverCount = 0
+var lastCountReportTime = CFAbsoluteTimeGetCurrent()
 public class GrayScottSolver : NSOperation
 {
     private var grayScottData = NSMutableArray(capacity: Constants.LENGTH_SQUARED);
@@ -30,6 +32,8 @@ public class GrayScottSolver : NSOperation
         
         self.setGrayScott(grayScottData);
     }
+    
+    
     
     override public func main() -> ()
     {
@@ -67,7 +71,14 @@ public class GrayScottSolver : NSOperation
 
         grayScottData = outputArray;
         
-        println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime));
+        
+        ++solverCount
+        if lastCountReportTime < CFAbsoluteTimeGetCurrent() - 1.0 {
+            println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime));
+            println("Solved \(solverCount) frames")
+            solverCount = 0
+            lastCountReportTime = CFAbsoluteTimeGetCurrent()
+        }
     }
     
     // Double is faster that Double...

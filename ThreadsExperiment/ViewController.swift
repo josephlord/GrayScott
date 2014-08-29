@@ -152,7 +152,15 @@ class ViewController: UIViewController
     private func renderGrayScott()
     {
         imageView.image = renderer!.getGrayScottImage();
+        ++displayCount
+        let time_passed = CFAbsoluteTimeGetCurrent() - lastDisplayCountTime
+        if time_passed > 10.0 {
+            println("Displaying \(Double(displayCount)/time_passed) fps")
+            displayCount = 0
+            lastDisplayCountTime = CFAbsoluteTimeGetCurrent()
+        }
     }
 
 }
-
+var displayCount = 0
+var lastDisplayCountTime = CFAbsoluteTimeGetCurrent() + 0.2

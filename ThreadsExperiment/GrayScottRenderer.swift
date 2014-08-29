@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 
+var renderCount = 0
+var lastRenderCountReportTime = CFAbsoluteTimeGetCurrent() + 0.1
+
 public class GrayScottRenderer : NSOperation
 {
 
@@ -44,7 +47,13 @@ public class GrayScottRenderer : NSOperation
         
         UIGraphicsEndImageContext();
         
-        println(" R RENDER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime));
+        ++renderCount
+        if lastRenderCountReportTime < CFAbsoluteTimeGetCurrent() - 1.0 {
+            println(" R RENDER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime));
+            println("Rendered \(renderCount) frames")
+            renderCount = 0
+            lastRenderCountReportTime = CFAbsoluteTimeGetCurrent()
+        }
     }
     
     private func setGrayScott(value : NSMutableArray)

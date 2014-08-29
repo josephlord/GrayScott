@@ -8,7 +8,7 @@
 
 import Foundation
 
-public let solverQueues = 1
+public let solverQueues = 2
 
 struct Constants
 {

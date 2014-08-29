@@ -66,15 +66,14 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
     assert(outputArray.count == Constants.LENGTH_SQUARED)
     assert(grayScottConstData.count == Constants.LENGTH_SQUARED)
     
-    var index : Int = startLine * Constants.LENGTH
-
     // The middle bulk
         //    for i in (startLine+1)..<(endLine-1)
     for i in startLine..<endLine
     {
-        for j in 1..<Constants.LENGTH_MINUS_ONE
-        //for j in 0..<Constants.LENGTH
+        //for j in 1..<Constants.LENGTH_MINUS_ONE
+        for j in 0..<Constants.LENGTH
         {
+            let index = i * Constants.LENGTH + j
             let thisPixel = grayScottConstData[i * Constants.LENGTH + j]
             let northPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
             let southPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
@@ -91,12 +90,12 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
             let outputDataCell = GrayScottStruct(u: (thisPixel.u + deltaU).clip(), v: (thisPixel.v + deltaV).clip())
             
             let u_I = UInt8(outputDataCell.u * 255)
+            
             outputPixels[index].r = u_I
             outputPixels[index].g = u_I
             outputPixels[index].b = UInt8(outputDataCell.v * 255)
             
-            
-            outputArray[index++] = outputDataCell
+            outputArray[index] = outputDataCell
         }
     }
     // First and last lines
@@ -129,7 +128,7 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
         }
     }
     */
-    // Left and right edges
+/*    // Left and right edges
     //for i in (startLine+1)..<(endLine-1)
     for i in startLine..<endLine
     {
@@ -158,5 +157,5 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
             
             outputArray[index++] = outputDataCell
         }
-    }
+    }*/
 }

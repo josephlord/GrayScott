@@ -67,18 +67,18 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
     assert(grayScottConstData.count == Constants.LENGTH_SQUARED)
     
     // The middle bulk
-        //    for i in (startLine+1)..<(endLine-1)
-    for i in startLine..<endLine
+    for i in (startLine+1)..<(endLine-1)
+        //for i in startLine..<endLine
     {
-        //for j in 1..<Constants.LENGTH_MINUS_ONE
-        for j in 0..<Constants.LENGTH
+        for j in 1..<Constants.LENGTH_MINUS_ONE
+            //for j in 0..<Constants.LENGTH
         {
             let index = i * Constants.LENGTH + j
             let thisPixel = grayScottConstData[index]
-            let eastPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let westPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let northPixel = grayScottConstData[(i - 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
-            let southPixel = grayScottConstData[(i + 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            let eastPixel = grayScottConstData[index + 1]
+            let westPixel = grayScottConstData[index - 1]
+            let northPixel = grayScottConstData[index - Constants.LENGTH]
+            let southPixel = grayScottConstData[index + Constants.LENGTH]
             
             let laplacianU = northPixel.u + southPixel.u + westPixel.u + eastPixel.u - (4.0 * thisPixel.u);
             let laplacianV = northPixel.v + southPixel.v + westPixel.v + eastPixel.v - (4.0 * thisPixel.v);
@@ -99,15 +99,16 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
         }
     }
     // First and last lines
- /*   for i in [startLine, endLine - 1]
+    for i in [startLine, endLine - 1]
     {
-        for j in 0 ..< Constants.LENGTH
+        for j in 1..<Constants.LENGTH_MINUS_ONE
         {
-            let thisPixel = grayScottConstData[i * Constants.LENGTH + j]
-            let northPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let southPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let eastPixel = grayScottConstData[(i - 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
-            let westPixel = grayScottConstData[(i + 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            let index = i * Constants.LENGTH + j
+            let thisPixel = grayScottConstData[index]
+            let eastPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
+            let westPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
+            let northPixel = grayScottConstData[(i - 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            let southPixel = grayScottConstData[(i + 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
             
             let laplacianU = northPixel.u + southPixel.u + westPixel.u + eastPixel.u - (4.0 * thisPixel.u);
             let laplacianV = northPixel.v + southPixel.v + westPixel.v + eastPixel.v - (4.0 * thisPixel.v);
@@ -124,21 +125,22 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
             outputPixels[index].b = UInt8(outputDataCell.v * 255)
             
             
-            outputArray[index++] = outputDataCell
+            outputArray[index] = outputDataCell
         }
     }
-    */
-/*    // Left and right edges
+    
+    // Left and right edges
     //for i in (startLine+1)..<(endLine-1)
     for i in startLine..<endLine
     {
         for j in [0,Constants.LENGTH_MINUS_ONE]
         {
-            let thisPixel = grayScottConstData[i * Constants.LENGTH + j]
-            let northPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let southPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let eastPixel = grayScottConstData[(i - 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
-            let westPixel = grayScottConstData[(i + 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            let index = i * Constants.LENGTH + j
+            let thisPixel = grayScottConstData[index]
+            let eastPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
+            let westPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
+            let northPixel = grayScottConstData[(i - 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            let southPixel = grayScottConstData[(i + 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
             
             let laplacianU = northPixel.u + southPixel.u + westPixel.u + eastPixel.u - (4.0 * thisPixel.u);
             let laplacianV = northPixel.v + southPixel.v + westPixel.v + eastPixel.v - (4.0 * thisPixel.v);
@@ -155,7 +157,7 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
             outputPixels[index].b = UInt8(outputDataCell.v * 255)
             
             
-            outputArray[index++] = outputDataCell
+            outputArray[index] = outputDataCell
         }
-    }*/
+    }
 }

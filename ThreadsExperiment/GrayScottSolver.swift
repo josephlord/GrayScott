@@ -57,6 +57,9 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
 
 private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: GrayScottData, inout outputPixels:[PixelData]) {
     
+    let parameter_f = [Double](count: Constants.LENGTH, repeatedValue: parameters.f)
+    let parameter_k = [Double](count: Constants.LENGTH, repeatedValue: parameters.k)
+    
     assert(startLine >= 0)
     assert(endLine <= Constants.LENGTH)
     assert(outputArray.count == Constants.LENGTH_SQUARED)
@@ -64,7 +67,9 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
     //let grayScottConstData = grayScottConstDataObject.data
     let grayScottConstData_u_data = grayScottConstData.u_data
     let grayScottConstData_v_data = grayScottConstData.v_data
-    for i in startLine ..< endLine
+    // :TODO: Do something for top and bottom lines
+    // :TODO: Do left and right lines need fixing as the wrap is to the adjacent line
+    for i in max(startLine,1) ..< min(endLine, Constants.LENGTH_MINUS_ONE)
     {
         let top = 0 == i
         let bottom = Constants.LENGTH_MINUS_ONE == i
@@ -91,13 +96,12 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
             let v = thisPixel.v + deltaV
             //            let clipped_v = v < 0 ? 0 : v < 1.0 ? v : 1.0
             let outputDataCell = GrayScottStruct(u: u, v: v)
-
+            /*
             let u_I = UInt8(outputDataCell.u * 255)
             outputPixels[index].r = u_I
             outputPixels[index].g = u_I
             outputPixels[index].b = UInt8(outputDataCell.v * 255)
-            
-            
+            */
             outputArray[index] = outputDataCell
         }
     }
@@ -106,10 +110,19 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
     vDSP_vminD(outputArray.v_data, 1, oneArray, 1, &outputArray.v_data, 1, arrayLength)
     vDSP_vmaxD(outputArray.u_data, 1, zeroArray, 1, &outputArray.u_data, 1, arrayLength)
     vDSP_vmaxD(outputArray.v_data, 1, zeroArray, 1, &outputArray.v_data, 1, arrayLength)
-    //    vvfloor(&outputArray.u_data, floorArray, [Int32(Constants.LENGTH_SQUARED)])
-    //vvceil(&outputArray.v_data, ceilArray, [Int32(Constants.LENGTH_SQUARED)])
-    //vvfloor(&outputArray.v_data, floorArray, [Int32(Constants.LENGTH_SQUARED)])
+    
+    var outputData_u = twoFiveFiveArray
+    vDSP_vmulD(outputArray.u_data, 1, twoFiveFiveArray, 1, &outputData_u, 1, arrayLength)
+    var outputData_v = twoFiveFiveArray
+    vDSP_vmulD(outputArray.v_data, 1, twoFiveFiveArray, 1, &outputData_v, 1, arrayLength)
+
+    for i in startLine..<(endLine*Constants.LENGTH) {
+        outputPixels[i].r = UInt8(outputData_u[i])
+        outputPixels[i].g = UInt8(outputData_u[i])
+        outputPixels[i].b = UInt8(outputData_v[i])
+    }
 }
 
 let zeroArray = [Double](count:Constants.LENGTH_SQUARED, repeatedValue: 0.0)
 let oneArray = [Double](count:Constants.LENGTH_SQUARED, repeatedValue: 1.0)
+let twoFiveFiveArray = [Double](count: Constants.LENGTH_SQUARED, repeatedValue:255.0)

@@ -14,10 +14,10 @@
 import Foundation
 
 public struct GrayScottParameters {
-    public var f : Double
-    public var k : Double
-    public var dU : Double
-    public var dV : Double
+    public var f : Float
+    public var k : Float
+    public var dU : Float
+    public var dV : Float
 }
 
 private var solverstatsCount = 0
@@ -78,8 +78,8 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
             let laplacianV = northPixel.v + southPixel.v + westPixel.v + eastPixel.v - (4.0 * thisPixel.v);
             let reactionRate = thisPixel.u * thisPixel.v * thisPixel.v;
             
-            let deltaU : Double = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
-            let deltaV : Double = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
+            let deltaU : Float = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
+            let deltaV : Float = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
             
             let u = thisPixel.u + deltaU
             let clipped_u = u < 0 ? 0 : u < 1.0 ? u : 1.0

@@ -8,10 +8,10 @@
 
 import Foundation
 
-extension Double
+extension Float
 {
     func format() -> String
     {
-        return NSString(format: "%.4f", Double(self));
+        return NSString(format: "%.4f", Float(self));
     }
 }

@@ -32,7 +32,7 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
     var outputArray = [GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
     var outputPixels = [PixelData](count: grayScottConstData.count, repeatedValue: PixelData(a: 255, r:0, g: 0, b: 0))
     
-    let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
+    let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
     
     let sectionSize:Int = Constants.LENGTH/solverQueues
     var sectionIndexes = map(0...solverQueues) { Int($0 * sectionSize) }

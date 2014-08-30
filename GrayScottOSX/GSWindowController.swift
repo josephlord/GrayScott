@@ -13,7 +13,7 @@ class GSWindowController: NSWindowController {
     @IBOutlet var imageView: NSImageView!
     
     var parameters = GrayScottParameters(f: 0.023, k: 0.0795, dU: 0.16, dV: 0.08)
-    var grayScottData:[GrayScottStruct] = {
+    var grayScottData:GrayScottData = {
         
         var data = [GrayScottStruct]()
         for i in 0..<Constants.LENGTH_SQUARED
@@ -32,7 +32,7 @@ class GSWindowController: NSWindowController {
                 }
             }
         }
-        return data
+        return GrayScottData(data: data)
         }()
     
     override func windowDidLoad() {

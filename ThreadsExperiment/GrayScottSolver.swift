@@ -21,7 +21,7 @@ public struct GrayScottParameters {
 }
 
 private var solverstatsCount = 0
-public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScottParameters)->([GrayScottStruct],[PixelData]) {
+public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GrayScottParameters)->(GrayScottData,[PixelData]) {
     
     let stats = solverstatsCount % 1024 == 0
     var startTime : CFAbsoluteTime?
@@ -29,7 +29,7 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
         startTime = CFAbsoluteTimeGetCurrent();
     }
 
-    var outputArray = [GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
+    var outputArray = GrayScottData()//[GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
     var outputPixels = [PixelData](count: grayScottConstData.count, repeatedValue: PixelData(a: 255, r:0, g: 0, b: 0))
     
     let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
@@ -53,7 +53,7 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
     return (outputArray, outputPixels)
 }
 
-private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: [GrayScottStruct], inout outputPixels:[PixelData]) {
+private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: GrayScottData, inout outputPixels:[PixelData]) {
     
     assert(startLine >= 0)
     assert(endLine <= Constants.LENGTH)

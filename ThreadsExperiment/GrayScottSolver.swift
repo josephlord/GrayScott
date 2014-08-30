@@ -16,10 +16,10 @@ import Accelerate
 
 
 public struct GrayScottParameters {
-    public var f : Double
-    public var k : Double
-    public var dU : Double
-    public var dV : Double
+    public var f : Float
+    public var k : Float
+    public var dU : Float
+    public var dV : Float
 }
 
 private var solverstatsCount = 0
@@ -57,8 +57,8 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
 
 private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: GrayScottData, inout outputPixels:[PixelData]) {
     
-    let parameter_f = [Double](count: Constants.LENGTH, repeatedValue: parameters.f)
-    let parameter_k = [Double](count: Constants.LENGTH, repeatedValue: parameters.k)
+    let parameter_f = [Float](count: Constants.LENGTH, repeatedValue: parameters.f)
+    let parameter_k = [Float](count: Constants.LENGTH, repeatedValue: parameters.k)
     
     assert(startLine >= 0)
     assert(endLine <= Constants.LENGTH)
@@ -88,8 +88,8 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
             let laplacianV = northPixel.v + southPixel.v + westPixel.v + eastPixel.v - (4.0 * thisPixel.v);
             let reactionRate = thisPixel.u * thisPixel.v * thisPixel.v;
             
-            let deltaU : Double = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
-            let deltaV : Double = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
+            let deltaU : Float = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
+            let deltaV : Float = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
 
             let u = thisPixel.u + deltaU
             //            let clipped_u = u < 0 ? 0 : u < 1.0 ? u : 1.0
@@ -106,15 +106,15 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
         }
     }
     let arrayLength = UInt(Constants.LENGTH_SQUARED)
-    vDSP_vminD(outputArray.u_data, 1, oneArray, 1, &outputArray.u_data, 1, arrayLength)
-    vDSP_vminD(outputArray.v_data, 1, oneArray, 1, &outputArray.v_data, 1, arrayLength)
-    vDSP_vmaxD(outputArray.u_data, 1, zeroArray, 1, &outputArray.u_data, 1, arrayLength)
-    vDSP_vmaxD(outputArray.v_data, 1, zeroArray, 1, &outputArray.v_data, 1, arrayLength)
+    vDSP_vmin(outputArray.u_data, 1, oneArray, 1, &outputArray.u_data, 1, arrayLength)
+    vDSP_vmin(outputArray.v_data, 1, oneArray, 1, &outputArray.v_data, 1, arrayLength)
+    vDSP_vmax(outputArray.u_data, 1, zeroArray, 1, &outputArray.u_data, 1, arrayLength)
+    vDSP_vmax(outputArray.v_data, 1, zeroArray, 1, &outputArray.v_data, 1, arrayLength)
     
     var outputData_u = twoFiveFiveArray
-    vDSP_vmulD(outputArray.u_data, 1, twoFiveFiveArray, 1, &outputData_u, 1, arrayLength)
+    vDSP_vmul(outputArray.u_data, 1, twoFiveFiveArray, 1, &outputData_u, 1, arrayLength)
     var outputData_v = twoFiveFiveArray
-    vDSP_vmulD(outputArray.v_data, 1, twoFiveFiveArray, 1, &outputData_v, 1, arrayLength)
+    vDSP_vmul(outputArray.v_data, 1, twoFiveFiveArray, 1, &outputData_v, 1, arrayLength)
 
     for i in startLine..<(endLine*Constants.LENGTH) {
         outputPixels[i].r = UInt8(outputData_u[i])
@@ -123,6 +123,6 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
     }
 }
 
-let zeroArray = [Double](count:Constants.LENGTH_SQUARED, repeatedValue: 0.0)
-let oneArray = [Double](count:Constants.LENGTH_SQUARED, repeatedValue: 1.0)
-let twoFiveFiveArray = [Double](count: Constants.LENGTH_SQUARED, repeatedValue:255.0)
+let zeroArray = [Float](count:Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+let oneArray = [Float](count:Constants.LENGTH_SQUARED, repeatedValue: 1.0)
+let twoFiveFiveArray = [Float](count: Constants.LENGTH_SQUARED, repeatedValue:255.0)

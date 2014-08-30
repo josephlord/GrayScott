@@ -9,10 +9,10 @@
 import Foundation
 
 public struct GrayScottStruct {
-    var u : Double = 0.0
-    var v : Double = 0.0
+    var u : Float = 0.0
+    var v : Float = 0.0
     
-    init(u : Double, v: Double)
+    init(u : Float, v: Float)
     {
         self.u = u
         self.v = v
@@ -20,11 +20,11 @@ public struct GrayScottStruct {
 }
 
 public struct GrayScottData {
-    var u_data:[Double]
-    var v_data:[Double]
+    var u_data:[Float]
+    var v_data:[Float]
     init() {
-        u_data = [Double](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
-        v_data = [Double](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+        u_data = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+        v_data = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     }
     init(data:[GrayScottStruct]) {
         u_data = map(data) { $0.u }

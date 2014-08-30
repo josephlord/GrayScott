@@ -12,6 +12,8 @@
 //
 
 import Foundation
+import Accelerate
+
 
 public struct GrayScottParameters {
     public var f : Double
@@ -60,7 +62,8 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
     assert(outputArray.count == Constants.LENGTH_SQUARED)
     assert(grayScottConstData.count == Constants.LENGTH_SQUARED)
     //let grayScottConstData = grayScottConstDataObject.data
-
+    let grayScottConstData_u_data = grayScottConstData.u_data
+    let grayScottConstData_v_data = grayScottConstData.v_data
     for i in startLine ..< endLine
     {
         let top = 0 == i
@@ -82,13 +85,13 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
             
             let deltaU : Double = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
             let deltaV : Double = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
-            
+
             let u = thisPixel.u + deltaU
-            let clipped_u = u < 0 ? 0 : u < 1.0 ? u : 1.0
+            //            let clipped_u = u < 0 ? 0 : u < 1.0 ? u : 1.0
             let v = thisPixel.v + deltaV
-            let clipped_v = v < 0 ? 0 : v < 1.0 ? v : 1.0
-            let outputDataCell = GrayScottStruct(u: clipped_u, v: clipped_v)
-            
+            //            let clipped_v = v < 0 ? 0 : v < 1.0 ? v : 1.0
+            let outputDataCell = GrayScottStruct(u: u, v: v)
+
             let u_I = UInt8(outputDataCell.u * 255)
             outputPixels[index].r = u_I
             outputPixels[index].g = u_I
@@ -98,4 +101,15 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
             outputArray[index] = outputDataCell
         }
     }
+    let arrayLength = UInt(Constants.LENGTH_SQUARED)
+    vDSP_vminD(outputArray.u_data, 1, oneArray, 1, &outputArray.u_data, 1, arrayLength)
+    vDSP_vminD(outputArray.v_data, 1, oneArray, 1, &outputArray.v_data, 1, arrayLength)
+    vDSP_vmaxD(outputArray.u_data, 1, zeroArray, 1, &outputArray.u_data, 1, arrayLength)
+    vDSP_vmaxD(outputArray.v_data, 1, zeroArray, 1, &outputArray.v_data, 1, arrayLength)
+    //    vvfloor(&outputArray.u_data, floorArray, [Int32(Constants.LENGTH_SQUARED)])
+    //vvceil(&outputArray.v_data, ceilArray, [Int32(Constants.LENGTH_SQUARED)])
+    //vvfloor(&outputArray.v_data, floorArray, [Int32(Constants.LENGTH_SQUARED)])
 }
+
+let zeroArray = [Double](count:Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+let oneArray = [Double](count:Constants.LENGTH_SQUARED, repeatedValue: 1.0)

@@ -20,20 +20,25 @@ public struct GrayScottStruct {
 }
 
 public struct GrayScottData {
-    var data:[GrayScottStruct]
+    var u_data:[Double]
+    var v_data:[Double]
     init() {
-        data = [GrayScottStruct](count: Constants.LENGTH_SQUARED, repeatedValue: GrayScottStruct(u: 0, v: 0))
+        u_data = [Double](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+        v_data = [Double](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     }
     init(data:[GrayScottStruct]) {
-        self.data = data
+        u_data = map(data) { $0.u }
+        v_data = map(data) { $0.v }
     }
     subscript(index: Int) -> GrayScottStruct {
         get {
-            return data[index]
+            return GrayScottStruct(u: u_data[index], v: v_data[index])
         }
         set(newValue) {
-            data[index] = newValue
+            u_data[index] = newValue.u
+            v_data[index] = newValue.v
         }
     }
-    var count:Int { get { return data.count } }
+    var count:Int { get { return u_data.count } }
+
 }

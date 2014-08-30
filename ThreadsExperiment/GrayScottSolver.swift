@@ -53,13 +53,13 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     return (outputArray, outputPixels)
 }
 
-private func grayScottPartialSolver(grayScottConstDataObject: GrayScottData, parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: GrayScottData, inout outputPixels:[PixelData]) {
+private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: GrayScottData, inout outputPixels:[PixelData]) {
     
     assert(startLine >= 0)
     assert(endLine <= Constants.LENGTH)
     assert(outputArray.count == Constants.LENGTH_SQUARED)
-    assert(grayScottConstDataObject.count == Constants.LENGTH_SQUARED)
-    let grayScottConstData = grayScottConstDataObject.data
+    assert(grayScottConstData.count == Constants.LENGTH_SQUARED)
+    //let grayScottConstData = grayScottConstDataObject.data
 
     for i in startLine ..< endLine
     {

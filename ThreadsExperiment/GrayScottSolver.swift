@@ -32,7 +32,7 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     }
 
     var outputArray = GrayScottData()//[GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
-    var outputPixels = [PixelData](count: grayScottConstData.count, repeatedValue: PixelData(a: 255, r:0, g: 0, b: 0))
+    
     
     let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
     
@@ -42,10 +42,34 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     let dispatchGroup = dispatch_group_create()
     for i in 0..<solverQueues {
             dispatch_group_async(dispatchGroup, queue) {
-            grayScottPartialSolver(grayScottConstData, parameters, sectionIndexes[i], sectionIndexes[i + 1], &outputArray, &outputPixels)
+            grayScottPartialSolver(grayScottConstData, parameters, sectionIndexes[i], sectionIndexes[i + 1], &outputArray)
         }
     }
     dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER)
+ 
+    var outputPixels = [PixelData](count: grayScottConstData.count, repeatedValue: PixelData(a: 255, r:0, g: 0, b: 0))
+    var outputData_u = twoFiveFiveArray
+    outputData_u.withUnsafeBufferPointer {
+        
+        vDSP_vmul(outputArray.u_data, 1, twoFiveFiveArray, 1, usmp + 60*Constants.LENGTH, 1, UInt(Constants.LENGTH_SQUARED/2))
+    }
+    // - 60 * Constants.LENGTH))
+    var outputData_v = twoFiveFiveArray
+    vDSP_vmul(outputArray.v_data, 1, twoFiveFiveArray, 1, &outputData_v, 1, UInt(Constants.LENGTH_SQUARED))
+    
+    for i in 0..<Constants.LENGTH_SQUARED {
+        outputPixels[i].r = UInt8(outputData_u[i])
+        outputPixels[i].g = UInt8(outputData_u[i])
+        outputPixels[i].b = UInt8(outputData_v[i])
+    }
+/*    var outBuf:vImage_Buffer = vImage_Buffer(data: nil, height: 1,width: 1,rowBytes: 1)
+    outBuf.data = &outputPixels
+    //outBuf.data  = (outputPixels) as UnsafeMutablePointer<Void>
+    //var outImBuf = vImage_Buffer(data:(&outputPixels) as UnsafeMutablePointer<Void>, height: vImagePixelCount(Constants.LENGTH), width: vImagePixelCount(Constants.LENGTH), rowBytes: size_t(4 * Constants.LENGTH))
+    //    vImageBuffer_Init(<#buf: UnsafeMutablePointer<vImage_Buffer>#>, <#height: vImagePixelCount#>, <#width: vImagePixelCount#>, <#pixelBits: UInt32#>, <#flags: vImage_Flags#>)
+    vImageConvert_PlanarFToARGB8888(alpha: zeroArray, red: outputData_u, green: outputData_u, blue: outputData_v, dest: outBuf, maxFloat: [255.0,255.0,255.0,255.0], minFloat: [0.0,0.0,0.0,0.0], flags: kvImageNoFlags)
+
+    */
     
     if stats {
         println("S  SOLVER:" + NSString(format: "%.6f", CFAbsoluteTimeGetCurrent() - startTime!));
@@ -55,18 +79,19 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     return (outputArray, outputPixels)
 }
 
-private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: GrayScottData, inout outputPixels:[PixelData]) {
+private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: GrayScottData) {
     
     let parameter_f = [Float](count: Constants.LENGTH, repeatedValue: parameters.f)
     let parameter_k = [Float](count: Constants.LENGTH, repeatedValue: parameters.k)
+    let grayScottConstData_u_data = grayScottConstData.u_data
+    let grayScottConstData_v_data = grayScottConstData.v_data
     
     assert(startLine >= 0)
     assert(endLine <= Constants.LENGTH)
     assert(outputArray.count == Constants.LENGTH_SQUARED)
     assert(grayScottConstData.count == Constants.LENGTH_SQUARED)
     //let grayScottConstData = grayScottConstDataObject.data
-    let grayScottConstData_u_data = grayScottConstData.u_data
-    let grayScottConstData_v_data = grayScottConstData.v_data
+    
     // :TODO: Do something for top and bottom lines
     // :TODO: Do left and right lines need fixing as the wrap is to the adjacent line
     for i in max(startLine,1) ..< min(endLine, Constants.LENGTH_MINUS_ONE)
@@ -111,16 +136,6 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
     vDSP_vmax(outputArray.u_data, 1, zeroArray, 1, &outputArray.u_data, 1, arrayLength)
     vDSP_vmax(outputArray.v_data, 1, zeroArray, 1, &outputArray.v_data, 1, arrayLength)
     
-    var outputData_u = twoFiveFiveArray
-    vDSP_vmul(outputArray.u_data, 1, twoFiveFiveArray, 1, &outputData_u, 1, arrayLength)
-    var outputData_v = twoFiveFiveArray
-    vDSP_vmul(outputArray.v_data, 1, twoFiveFiveArray, 1, &outputData_v, 1, arrayLength)
-
-    for i in startLine..<(endLine*Constants.LENGTH) {
-        outputPixels[i].r = UInt8(outputData_u[i])
-        outputPixels[i].g = UInt8(outputData_u[i])
-        outputPixels[i].b = UInt8(outputData_v[i])
-    }
 }
 
 let zeroArray = [Float](count:Constants.LENGTH_SQUARED, repeatedValue: 0.0)

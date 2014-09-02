@@ -11,6 +11,6 @@ import Foundation
 public struct Constants
 {
     static let LENGTH : Int = 70;
-    static let LENGTH_MINUS_ONE : Int = 69;
-    static let LENGTH_SQUARED : Int = 4900;
+    static let LENGTH_MINUS_ONE : Int = LENGTH - 1;
+    static let LENGTH_SQUARED : Int = LENGTH * LENGTH;
 }

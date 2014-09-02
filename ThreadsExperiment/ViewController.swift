@@ -104,8 +104,11 @@ class ViewController: UIViewController
     }
     
     
+    var lastFramerateTime = CFAbsoluteTimeGetCurrent()
+    var framesDisplayed = 0
     private func dispatchSolverOperation()
     {
+        
         let dataCopy = grayScottData
         let params = GrayScottParmeters(f: f, k: k, dU: dU, dV: dV)
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
@@ -114,6 +117,12 @@ class ViewController: UIViewController
             dispatch_async(dispatch_get_main_queue()) {
                 self.grayScottData = newGSData
                 self.imageView.image = newImage
+                ++self.framesDisplayed
+                if(self.lastFramerateTime < CFAbsoluteTimeGetCurrent() - 1.0) {
+                    println("Displayed \(self.framesDisplayed) frames in last second")
+                    self.framesDisplayed = 0
+                    self.lastFramerateTime = CFAbsoluteTimeGetCurrent()
+                }
                 self.dispatchSolverOperation()
             }
         }

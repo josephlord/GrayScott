@@ -21,8 +21,10 @@ struct GrayScottParmeters {
     var dV : Double
 }
 
+var framecount = 0
 
 func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScottParmeters)->[GrayScottStruct] {
+
     let startTime : CFAbsoluteTime = CFAbsoluteTimeGetCurrent();
     
     var index : Int = 0;
@@ -51,9 +53,10 @@ func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScott
             outputArray[index++] = outputPixel;
         }
     }
+    ++framecount
 
-    
-    println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime));
-    
+    if (framecount % 32 == 0){
+        println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime));
+    }
     return outputArray
 }

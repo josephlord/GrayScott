@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-
+var renderFrameCount = 0
 
 func renderGrayScott(grayScottData:[GrayScottStruct])->UIImage
 {
@@ -32,8 +32,10 @@ func renderGrayScott(grayScottData:[GrayScottStruct])->UIImage
     let outputImage = UIGraphicsGetImageFromCurrentImageContext();
     
     UIGraphicsEndImageContext();
-
-    println(" R RENDER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime));
-        
+    ++renderFrameCount
+    if renderFrameCount % 32 == 0 {
+        println(" R RENDER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime));
+    }
+    
     return outputImage
 }

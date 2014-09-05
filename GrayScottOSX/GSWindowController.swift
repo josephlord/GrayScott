@@ -54,7 +54,7 @@ class GSWindowController: NSWindowController {
         weak var weakSelf = self
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             while (true) {
-                var pixelData:[PixelData]
+                var pixelData:ImageBitmap
                 (data, pixelData) = grayScottSolver(data, params)
                 let dataCopy = data
                 if let s = weakSelf {

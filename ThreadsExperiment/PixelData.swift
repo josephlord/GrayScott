@@ -14,3 +14,10 @@ public struct PixelData {
     var g:UInt8
     var b:UInt8
 }
+
+public struct ImageBitmap {
+    var data: [Int8]
+    init() {
+        data = [Int8](count: 4 * Constants.LENGTH_SQUARED, repeatedValue: -1)
+    }
+}

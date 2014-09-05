@@ -9,6 +9,7 @@
 import Cocoa
 
 public let solverQueues = 1
+
 public struct Constants
 {
     static let LENGTH : Int = 512

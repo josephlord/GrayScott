@@ -17,19 +17,13 @@
 		BE0E5C7E198CA26700395741 /* ThreadsExperimentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0E5C7D198CA26700395741 /* ThreadsExperimentTests.swift */; };
 		BE0E5C8B198CD7F400395741 /* GrayScottSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0E5C8A198CD7F400395741 /* GrayScottSolver.swift */; };
 		BE3A831219A651940037C740 /* ThreadsExperimentUnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3A831119A651940037C740 /* ThreadsExperimentUnitTests.swift */; };
-		BE3A831619A651B60037C740 /* GrayScottSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0E5C8A198CD7F400395741 /* GrayScottSolver.swift */; };
 		BE3A831819A652820037C740 /* GrayScottStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF4B99C1991EA37004FC621 /* GrayScottStruct.swift */; };
 		BE3A831A19A65D1D0037C740 /* DoubleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE623415198D524000C0A592 /* DoubleExtension.swift */; };
 		BE3A832419A6600D0037C740 /* ThreadsExperimentTests_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3A832319A6600D0037C740 /* ThreadsExperimentTests_OSX.swift */; };
 		BE3A832819A660710037C740 /* GrayScottStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF4B99C1991EA37004FC621 /* GrayScottStruct.swift */; };
 		BE3A832919A660760037C740 /* DoubleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE623415198D524000C0A592 /* DoubleExtension.swift */; };
-		BE3A832B19A6607E0037C740 /* GrayScottSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0E5C8A198CD7F400395741 /* GrayScottSolver.swift */; };
-		BE4069DD19ABFC860023AAA4 /* PixelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE623417198DFE2100C0A592 /* PixelData.swift */; };
-		BE4069DE19ABFC870023AAA4 /* PixelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE623417198DFE2100C0A592 /* PixelData.swift */; };
-		BE4069DF19ABFC880023AAA4 /* PixelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE623417198DFE2100C0A592 /* PixelData.swift */; };
 		BE623416198D524000C0A592 /* DoubleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE623415198D524000C0A592 /* DoubleExtension.swift */; };
 		BE623418198DFE2100C0A592 /* PixelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE623417198DFE2100C0A592 /* PixelData.swift */; };
-		BE8CC40219ABEF8D008F1D1D /* PixelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE623417198DFE2100C0A592 /* PixelData.swift */; };
 		BEE9747D19A77B63006B1208 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE9747C19A77B63006B1208 /* main.swift */; };
 		BEE9747F19A77B63006B1208 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE9747E19A77B63006B1208 /* AppDelegate.swift */; };
 		BEE9748119A77B63006B1208 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BEE9748019A77B63006B1208 /* Images.xcassets */; };
@@ -578,7 +572,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE4069DD19ABFC860023AAA4 /* PixelData.swift in Sources */,
 				BE0E5C7E198CA26700395741 /* ThreadsExperimentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -587,11 +580,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE4069DE19ABFC870023AAA4 /* PixelData.swift in Sources */,
 				BE3A831A19A65D1D0037C740 /* DoubleExtension.swift in Sources */,
 				BE3A831219A651940037C740 /* ThreadsExperimentUnitTests.swift in Sources */,
 				BE3A831819A652820037C740 /* GrayScottStruct.swift in Sources */,
-				BE3A831619A651B60037C740 /* GrayScottSolver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -599,9 +590,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE4069DF19ABFC880023AAA4 /* PixelData.swift in Sources */,
 				BE3A832919A660760037C740 /* DoubleExtension.swift in Sources */,
-				BE3A832B19A6607E0037C740 /* GrayScottSolver.swift in Sources */,
 				BE3A832419A6600D0037C740 /* ThreadsExperimentTests_OSX.swift in Sources */,
 				BE3A832819A660710037C740 /* GrayScottStruct.swift in Sources */,
 			);
@@ -627,7 +616,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE8CC40219ABEF8D008F1D1D /* PixelData.swift in Sources */,
 				BEE9749019A77B63006B1208 /* GrayScottOSXTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

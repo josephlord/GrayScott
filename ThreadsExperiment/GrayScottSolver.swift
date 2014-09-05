@@ -23,7 +23,7 @@ public struct GrayScottParameters {
 }
 
 private var solverstatsCount = 0
-public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GrayScottParameters)->(GrayScottData,[PixelData]) {
+public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GrayScottParameters)->(GrayScottData,ImageBitmap) {
     
     let stats = solverstatsCount % 1024 == 0
     var startTime : CFAbsoluteTime?
@@ -47,30 +47,20 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     }
     dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER)
  
-    var outputPixels = [PixelData](count: grayScottConstData.count, repeatedValue: PixelData(a: 255, r:0, g: 0, b: 0))
-    var outputData_u = twoFiveFiveArray
-    outputData_u.withUnsafeBufferPointer {
-        
-        vDSP_vmul(outputArray.u_data, 1, twoFiveFiveArray, 1, usmp + 60*Constants.LENGTH, 1, UInt(Constants.LENGTH_SQUARED/2))
-    }
-    // - 60 * Constants.LENGTH))
-    var outputData_v = twoFiveFiveArray
-    vDSP_vmul(outputArray.v_data, 1, twoFiveFiveArray, 1, &outputData_v, 1, UInt(Constants.LENGTH_SQUARED))
-    
-    for i in 0..<Constants.LENGTH_SQUARED {
-        outputPixels[i].r = UInt8(outputData_u[i])
-        outputPixels[i].g = UInt8(outputData_u[i])
-        outputPixels[i].b = UInt8(outputData_v[i])
-    }
-/*    var outBuf:vImage_Buffer = vImage_Buffer(data: nil, height: 1,width: 1,rowBytes: 1)
-    outBuf.data = &outputPixels
-    //outBuf.data  = (outputPixels) as UnsafeMutablePointer<Void>
-    //var outImBuf = vImage_Buffer(data:(&outputPixels) as UnsafeMutablePointer<Void>, height: vImagePixelCount(Constants.LENGTH), width: vImagePixelCount(Constants.LENGTH), rowBytes: size_t(4 * Constants.LENGTH))
-    //    vImageBuffer_Init(<#buf: UnsafeMutablePointer<vImage_Buffer>#>, <#height: vImagePixelCount#>, <#width: vImagePixelCount#>, <#pixelBits: UInt32#>, <#flags: vImage_Flags#>)
-    vImageConvert_PlanarFToARGB8888(alpha: zeroArray, red: outputData_u, green: outputData_u, blue: outputData_v, dest: outBuf, maxFloat: [255.0,255.0,255.0,255.0], minFloat: [0.0,0.0,0.0,0.0], flags: kvImageNoFlags)
+    var outputPixels = ImageBitmap()
+    var outputData_uv255 = [Float](count: outputArray.u_data.count, repeatedValue: 0.0)
+    var twoFiveFive:Float = 255.0 // Scalar multiplier to pass reference to.
 
-    */
+    // Set outputData_uv to u * 255 then convert to Int8 and assign to R and G values in image bitmap
+    vDSP_vsmul(outputArray.u_data, 1, &twoFiveFive , &outputData_uv255, 1, UInt(outputData_uv255.count))
+    vDSP_vfix8 (outputData_uv255, 1, &outputPixels.data + 1, 4, UInt(outputData_uv255.count))
+    // This could be a copy for less mem access
+    vDSP_vfix8 (outputData_uv255, 1, &outputPixels.data + 2, 4, UInt(outputData_uv255.count))
     
+    vDSP_vsmul(outputArray.v_data, 1, &twoFiveFive , &outputData_uv255, 1, UInt(outputData_uv255.count))
+    vDSP_vfix8 (outputData_uv255, 1, &outputPixels.data + 3, 4, UInt(outputData_uv255.count))
+    
+    var outputData_v255 = outputArray.u_data
     if stats {
         println("S  SOLVER:" + NSString(format: "%.6f", CFAbsoluteTimeGetCurrent() - startTime!));
     }

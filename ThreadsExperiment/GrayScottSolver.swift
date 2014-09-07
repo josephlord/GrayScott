@@ -27,8 +27,8 @@ private func laplacian(var initialData:[Float])->[Float] {
     let lenSqU = UInt(Constants.LENGTH_SQUARED)
     let len_missing_line:Int = Int(lenSqU - Constants.LENGTH)
     //initialData.withUnsafeBufferPointer { (initialDataBuffer:UnsafeBufferPointer<Float>)->() in
-        var four = Float(-4.0)
-        vDSP_vsmul(initialData, 1, &four, &laplacian, 1, lenSqU)
+        var minusFour = Float(-4.0)
+        vDSP_vsmul(initialData, 1, &minusFour, &laplacian, 1, lenSqU)
         // Add West
         vDSP_vadd(initialData, 1, &laplacian + 1, 1, &laplacian + 1, 1, lenSqU - 1)
         // Should fix up wrapping (currently going to previous line other side.
@@ -42,8 +42,8 @@ private func laplacian(var initialData:[Float])->[Float] {
         // South
         vDSP_vadd(&initialData + Constants.LENGTH, 1, &laplacian, 1, &laplacian, 1, lenSqU - Constants.LENGTH)
         vDSP_vadd(initialData, 1, &laplacian + len_missing_line, 1, &laplacian + len_missing_line, 1, UInt(Constants.LENGTH))
-        laplacian[0] += initialData[Constants.LENGTH]
-        laplacian[lenSqU - 1] += initialData[len_missing_line]
+        laplacian[0] += initialData[Constants.LENGTH_SQUARED - 1]
+        laplacian[lenSqU - 1] += initialData[0]
     // }
     
     return laplacian
@@ -95,14 +95,20 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     var deltaVa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     vDSP_vsma(laplacianV, 1, &dv, reactionRate, 1, &deltaVa, 1, lenSqU)
     
+    var k = parameters.k
+    vDSP_vsma(grayScottConstData.v_data, 1, &k, deltaVa, 1, &outputGS.v_data, 1, lenSqU)
+    
+    var negData = grayScottConstData.u_data
+    vDSP_vneg(grayScottConstData.u_data, 1, &negData, 1, lenSqU)
+    vDSP_vsadd(negData, 1, &one, &negData, 1, lenSqU)
+    var f = parameters.f
+    vDSP_vsma(negData, 1, &f, deltaUa, 1, &outputGS.u_data, 1, lenSqU)
+    vDSP_vadd(outputGS.u_data, 1, grayScottConstData.u_data, 1, &outputGS.u_data, 1, lenSqU)
+    
     
     
     vDSP_vclip(outputGS.u_data, 1, &zero, &one, &outputGS.u_data, 1, UInt(Constants.LENGTH_SQUARED))
     vDSP_vclip(outputGS.v_data, 1, &zero, &one, &outputGS.v_data, 1, UInt(Constants.LENGTH_SQUARED))
-    
-    
-    
-    
     
     var outputPixels = ImageBitmap()
     var outputData_uv255 = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
@@ -123,6 +129,16 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     }
     ++solverstatsCount
     
+    var comparisonGrayScott = grayScottConstData
+    grayScottPartialSolver(grayScottConstData, parameters, 0, Constants.LENGTH - 1, &comparisonGrayScott)
+    
+    for i in 0..<Constants.LENGTH_SQUARED {
+        if comparisonGrayScott.v_data[i] + 0.0001 < outputGS.v_data[i] ||  comparisonGrayScott.v_data[i] - 0.0001 > outputGS.v_data[i]{
+            println("solverstatsCount = \(solverstatsCount)")
+            println("u_data mismatch at position \(i) comp: \(comparisonGrayScott.v_data[i]) != \(outputGS.v_data[i]) - original data = \(grayScottConstData.v_data[i])")
+        }
+    }
+    
     return (outputGS, outputPixels)
 }
 
@@ -141,7 +157,8 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
     
     // :TODO: Do something for top and bottom lines
     // :TODO: Do left and right lines need fixing as the wrap is to the adjacent line
-    for i in max(startLine,1) ..< min(endLine, Constants.LENGTH_MINUS_ONE)
+    
+    for i in  0..<Constants.LENGTH
     {
         let top = 0 == i
         let bottom = Constants.LENGTH_MINUS_ONE == i

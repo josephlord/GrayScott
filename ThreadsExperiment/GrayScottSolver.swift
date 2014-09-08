@@ -68,7 +68,7 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
 
     var outputGS = grayScottConstData//GrayScottData()//[GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
 
-    /*
+    
     let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
     
     let sectionSize:Int = Constants.LENGTH/solverQueues
@@ -81,41 +81,8 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
         }
     }
     dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER)
-*/
-    var reactionRateIntermediate = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
-    var reactionRate = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
-    var zero = Float(0.0)
-    var one = Float(1.0)
-    let lenSqU = UInt(Constants.LENGTH_SQUARED)
-    vDSP_vsq(grayScottConstData.v_data, 1, &reactionRateIntermediate, 1, lenSqU)
-    vDSP_vmul(grayScottConstData.u_data, 1, reactionRateIntermediate, 1, &reactionRate, 1, lenSqU)
-    
-    var du = parameters.dU
-    var dv = parameters.dV
-    
 
-    
-    
-    let laplacianV = laplacian(grayScottConstData.v_data)
-    var deltaVa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
-    vDSP_vsma(laplacianV, 1, &dv, reactionRate, 1, &deltaVa, 1, lenSqU)
-    
-    var k = 1 - parameters.k
-    vDSP_vsma(grayScottConstData.v_data, 1, &k, deltaVa, 1, &outputGS.v_data, 1, lenSqU)
-    vDSP_vclip(outputGS.v_data, 1, &zero, &one, &outputGS.v_data, 1, UInt(Constants.LENGTH_SQUARED))
-    
-    var negData: [Float] = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
-    vDSP_vneg(grayScottConstData.u_data, 1, &negData, 1, lenSqU)
-    
-    vDSP_vsadd(negData, 1, &one, &negData, 1, lenSqU)
-    var deltaUa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
-    
-    let laplacianU = laplacian(grayScottConstData.u_data)
-    vDSP_vsmsb(laplacianU, 1, &du, reactionRate, 1, &deltaUa, 1, lenSqU)
-    var f = parameters.f
-    vDSP_vsma(negData, 1, &f, deltaUa, 1, &outputGS.u_data, 1, lenSqU)
-    vDSP_vadd(outputGS.u_data, 1, grayScottConstData.u_data, 1, &outputGS.u_data, 1, lenSqU)
-    vDSP_vclip(outputGS.u_data, 1, &zero, &one, &outputGS.u_data, 1, UInt(Constants.LENGTH_SQUARED))
+
     
     
     
@@ -141,65 +108,35 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
 }
 
 private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: GrayScottData) {
+    var reactionRateIntermediate = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    var reactionRate = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    var zero = Float(0.0)
+    var one = Float(1.0)
+    let lenSqU = UInt(Constants.LENGTH_SQUARED)
+    vDSP_vsq(grayScottConstData.v_data, 1, &reactionRateIntermediate, 1, lenSqU)
+    vDSP_vmul(grayScottConstData.u_data, 1, reactionRateIntermediate, 1, &reactionRate, 1, lenSqU)
     
-    let parameter_f = [Float](count: Constants.LENGTH, repeatedValue: parameters.f)
-    let parameter_k = [Float](count: Constants.LENGTH, repeatedValue: parameters.k)
-    let grayScottConstData_u_data = grayScottConstData.u_data
-    let grayScottConstData_v_data = grayScottConstData.v_data
+    var du = parameters.dU
+    var dv = parameters.dV
+ 
+    let laplacianV = laplacian(grayScottConstData.v_data)
+    var deltaVa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    vDSP_vsma(laplacianV, 1, &dv, reactionRate, 1, &deltaVa, 1, lenSqU)
     
-    assert(startLine >= 0)
-    assert(endLine <= Constants.LENGTH)
-    assert(outputArray.count == Constants.LENGTH_SQUARED)
-    assert(grayScottConstData.count == Constants.LENGTH_SQUARED)
-    //let grayScottConstData = grayScottConstDataObject.data
+    var k = 1 - parameters.k
+    vDSP_vsma(grayScottConstData.v_data, 1, &k, deltaVa, 1, &outputArray.v_data, 1, lenSqU)
+    vDSP_vclip(outputArray.v_data, 1, &zero, &one, &outputArray.v_data, 1, UInt(Constants.LENGTH_SQUARED))
     
-    // :TODO: Do something for top and bottom lines
-    // :TODO: Do left and right lines need fixing as the wrap is to the adjacent line
+    var negData: [Float] = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    vDSP_vneg(grayScottConstData.u_data, 1, &negData, 1, lenSqU)
     
-    for i in  0..<Constants.LENGTH
-    {
-        let top = 0 == i
-        let bottom = Constants.LENGTH_MINUS_ONE == i
-        for j in 0 ..< Constants.LENGTH
-        {
-            let left = j == 0
-            let right = j == Constants.LENGTH_MINUS_ONE
-            let index = i * Constants.LENGTH + j
-            let thisPixel = grayScottConstData[index]
-            let eastPixel = grayScottConstData[index + (right ? -j : 1)]
-            let westPixel = grayScottConstData[index + (left ? Constants.LENGTH_MINUS_ONE : -1)]
-            let northPixel = grayScottConstData[top ? Constants.LENGTH_SQUARED - Constants.LENGTH + j : index - Constants.LENGTH]
-            let southPixel = grayScottConstData[bottom ? j : index + Constants.LENGTH]
-            
-            let laplacianU = northPixel.u + southPixel.u + westPixel.u + eastPixel.u - (4.0 * thisPixel.u);
-            let laplacianV = northPixel.v + southPixel.v + westPixel.v + eastPixel.v - (4.0 * thisPixel.v);
-            let reactionRate = thisPixel.u * thisPixel.v * thisPixel.v;
-            
-            let deltaU : Float = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
-            let deltaV : Float = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
-
-            let u = thisPixel.u + deltaU
-            //            let clipped_u = u < 0 ? 0 : u < 1.0 ? u : 1.0
-            let v = thisPixel.v + deltaV
-            //            let clipped_v = v < 0 ? 0 : v < 1.0 ? v : 1.0
-            let outputDataCell = GrayScottStruct(u: u, v: v)
-            /*
-            let u_I = UInt8(outputDataCell.u * 255)
-            outputPixels[index].r = u_I
-            outputPixels[index].g = u_I
-            outputPixels[index].b = UInt8(outputDataCell.v * 255)
-            */
-            outputArray[index] = outputDataCell
-        }
-    }
-    let arrayLength = UInt(Constants.LENGTH_SQUARED)
-    vDSP_vmin(outputArray.u_data, 1, oneArray, 1, &outputArray.u_data, 1, arrayLength)
-    vDSP_vmin(outputArray.v_data, 1, oneArray, 1, &outputArray.v_data, 1, arrayLength)
-    vDSP_vmax(outputArray.u_data, 1, zeroArray, 1, &outputArray.u_data, 1, arrayLength)
-    vDSP_vmax(outputArray.v_data, 1, zeroArray, 1, &outputArray.v_data, 1, arrayLength)
+    vDSP_vsadd(negData, 1, &one, &negData, 1, lenSqU)
+    var deltaUa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     
+    let laplacianU = laplacian(grayScottConstData.u_data)
+    vDSP_vsmsb(laplacianU, 1, &du, reactionRate, 1, &deltaUa, 1, lenSqU)
+    var f = parameters.f
+    vDSP_vsma(negData, 1, &f, deltaUa, 1, &outputArray.u_data, 1, lenSqU)
+    vDSP_vadd(outputArray.u_data, 1, grayScottConstData.u_data, 1, &outputArray.u_data, 1, lenSqU)
+    vDSP_vclip(outputArray.u_data, 1, &zero, &one, &outputArray.u_data, 1, UInt(Constants.LENGTH_SQUARED))
 }
-
-let zeroArray = [Float](count:Constants.LENGTH_SQUARED, repeatedValue: 0.0)
-let oneArray = [Float](count:Constants.LENGTH_SQUARED, repeatedValue: 1.0)
-let twoFiveFiveArray = [Float](count: Constants.LENGTH_SQUARED, repeatedValue:255.0)

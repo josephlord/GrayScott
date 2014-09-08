@@ -101,16 +101,24 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     var deltaVa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     vDSP_vsma(laplacianV, 1, &dv, reactionRate, 1, &deltaVa, 1, lenSqU)
     
-    var k = parameters.k
+    for i in 0..<Constants.LENGTH_SQUARED {
+        if deltaVa[i] - (parameters.dV * laplacianV[i] + reactionRate[i]) != Float(0.0) {
+            println("deltaV error at \(i) deltaVa[i] = \(deltaVa[i]) expected \(parameters.dV * laplacianV[i] + reactionRate[i] - parameters.k * grayScottConstData.v_data[i])")
+        }
+    }
+    
+    var k = 1 - parameters.k
     vDSP_vsma(grayScottConstData.v_data, 1, &k, deltaVa, 1, &outputGS.v_data, 1, lenSqU)
+/*
+    for i in 0..<Constants.LENGTH_SQUARED {
+        if fabsf(outputGS.v_data[i] - (parameters.dV * laplacianV[i] + reactionRate[i] - parameters.k * grayScottConstData.v_data[i] + grayScottConstData.v_data[i])) < Float(0.0001) {
+            println("deltaV error at \(i) deltaVa[i] = \(outputGS.v_data[i]) expected \(parameters.dV * laplacianV[i] + reactionRate[i] - parameters.k * grayScottConstData.v_data[i] + grayScottConstData.v_data[i])")
+        }
+    }*/
     
     var negData: [Float] = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     vDSP_vneg(grayScottConstData.u_data, 1, &negData, 1, lenSqU)
-    for i in 0..<Constants.LENGTH_SQUARED {
-        if negData[i] + grayScottConstData.u_data[i] != Float(0.0) {
-            println("negation error at \(i)")
-        }
-    }
+    
     vDSP_vsadd(negData, 1, &one, &negData, 1, lenSqU)
     var f = parameters.f
     vDSP_vsma(negData, 1, &f, deltaUa, 1, &outputGS.u_data, 1, lenSqU)
@@ -143,12 +151,12 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     var comparisonGrayScott = grayScottConstData
     grayScottPartialSolver(grayScottConstData, parameters, 0, Constants.LENGTH - 1, &comparisonGrayScott)
     
- /*   for i in 0..<Constants.LENGTH_SQUARED {
+    for i in 0..<Constants.LENGTH_SQUARED {
         if comparisonGrayScott.v_data[i] + 0.0001 < outputGS.v_data[i] ||  comparisonGrayScott.v_data[i] - 0.0001 > outputGS.v_data[i]{
             println("solverstatsCount = \(solverstatsCount)")
             println("v_data mismatch at position \(i) comp: \(comparisonGrayScott.v_data[i]) != \(outputGS.v_data[i]) - original data = \(grayScottConstData.v_data[i])")
         }
-    }*/
+    }
     
     return (outputGS, outputPixels)
 }

@@ -18,7 +18,7 @@ class ViewController: UIViewController
     
     var parameters = GrayScottParameters(f: 0.023, k: 0.0795, dU: 0.16, dV: 0.08)
 
-    var grayScottData:[GrayScottStruct] = {
+    var grayScottData:GrayScottData = {
         
             var data = [GrayScottStruct]()
             for i in 0..<Constants.LENGTH_SQUARED
@@ -37,7 +37,7 @@ class ViewController: UIViewController
                     }
                 }
             }
-            return data
+        return GrayScottData(data: data)
         }()
 
     override func viewDidLoad()
@@ -52,15 +52,15 @@ class ViewController: UIViewController
         switch parameterButtonBar.selectedSegmentIndex
         {
             case 0:
-                parameters.f = Double(parameterSlider.value);
+                parameters.f = Float(parameterSlider.value);
             case 1:
-                parameters.k = Double(parameterSlider.value);
+                parameters.k = Float(parameterSlider.value);
             case 2:
-                parameters.dU = Double(parameterSlider.value);
+                parameters.dU = Float(parameterSlider.value);
             case 3:
-                parameters.dV = Double(parameterSlider.value);
+                parameters.dV = Float(parameterSlider.value);
             default:
-                parameters.f = Double(parameterSlider.value);
+                parameters.f = Float(parameterSlider.value);
         }
         
         updateLabel();
@@ -104,7 +104,7 @@ class ViewController: UIViewController
         weak var weakSelf = self
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             while (true) {
-                var pixelData:[PixelData]
+                var pixelData:ImageBitmap
                 (data, pixelData) = grayScottSolver(data, params)
                 let dataCopy = data
                 if let s = weakSelf {

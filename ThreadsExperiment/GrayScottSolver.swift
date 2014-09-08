@@ -12,88 +12,131 @@
 //
 
 import Foundation
+import Accelerate
+
 
 public struct GrayScottParameters {
-    public var f : Double
-    public var k : Double
-    public var dU : Double
-    public var dV : Double
+    public var f : Float
+    public var k : Float
+    public var dU : Float
+    public var dV : Float
+}
+
+private func laplacian(var initialData:[Float])->[Float] {
+    var laplacian = [Float](count: initialData.count, repeatedValue: 0.0)
+    var laplacianB = laplacian
+    let lenSqU = UInt(Constants.LENGTH_SQUARED)
+    let len_missing_line:Int = Int(lenSqU - Constants.LENGTH)
+    //initialData.withUnsafeBufferPointer { (initialDataBuffer:UnsafeBufferPointer<Float>)->() in
+        var minusFour = Float(-4.0)
+        vDSP_vsmul(initialData, 1, &minusFour, &laplacian, 1, lenSqU)
+    
+        //assert(laplacian[6] == -4.0)
+        // Add West
+        vDSP_vadd(initialData, 1, &laplacian + 1, 1, &laplacianB + 1, 1, lenSqU - 1)
+        //assert(laplacianB[6] == -3.0)
+        laplacianB[0] = laplacian[0] + initialData[Constants.LENGTH_SQUARED - 1]
+        // Should fix up wrapping (currently going to previous line other side.
+        // Add East
+        vDSP_vadd(&initialData + 1, 1, &laplacianB, 1, &laplacian, 1, lenSqU - 1)
+        //assert(laplacian[6] == -2.0)
+        laplacian[lenSqU - 1] = laplacianB[lenSqU - 1] + initialData[0]
+        // Should fix up wrapping (currently going to previous line other side.
+        // North
+        vDSP_vadd(initialData, 1, &laplacian + Constants.LENGTH, 1, &laplacianB + Constants.LENGTH, 1, lenSqU - Constants.LENGTH)
+        //assert(laplacianB[6] == -3.0)
+        // vDSP_vadd(&initialData + len_missing_line, 1, laplacian, 1, &laplacian, 1, UInt(Constants.LENGTH))
+        vDSP_vadd(laplacian, 1, &initialData + len_missing_line, 1, &laplacianB, 1, UInt(Constants.LENGTH))
+        //assert(laplacianB[6] == -1.0)
+        // South
+        vDSP_vadd(&initialData + Constants.LENGTH, 1, &laplacianB, 1, &laplacian, 1, lenSqU - Constants.LENGTH)
+        //assert(laplacian[6] == 0.0)
+        vDSP_vadd(initialData, 1, &laplacianB + len_missing_line, 1, &laplacian + len_missing_line, 1, UInt(Constants.LENGTH))
+        //assert(laplacian[6] == 0.0)
+    
+    return laplacian
 }
 
 private var solverstatsCount = 0
-public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScottParameters)->([GrayScottStruct],[PixelData]) {
+public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GrayScottParameters)->(GrayScottData,ImageBitmap) {
     
     let stats = solverstatsCount % 1024 == 0
     var startTime : CFAbsoluteTime?
     if stats {
         startTime = CFAbsoluteTimeGetCurrent();
     }
+
+    var outputGS = grayScottConstData//GrayScottData()//[GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
+
     
-    let semaphore = dispatch_semaphore_create(0)
-    //var queues
-    var outputArray = [GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
-    var outputPixels = [PixelData](count: grayScottConstData.count, repeatedValue: PixelData(a: 255, r:0, g: 0, b: 0))
-    
-    //let queue = dispatch_queue_create("com.humanfriendly.grayscottsolver",  DISPATCH_QUEUE_CONCURRENT)
-    let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
+    let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
     
     let sectionSize:Int = Constants.LENGTH/solverQueues
     var sectionIndexes = map(0...solverQueues) { Int($0 * sectionSize) }
     sectionIndexes[solverQueues] = Constants.LENGTH
-    
+    let dispatchGroup = dispatch_group_create()
     for i in 0..<solverQueues {
-            dispatch_async(queue) {
-            grayScottPartialSolver(grayScottConstData, parameters, sectionIndexes[i], sectionIndexes[i + 1], &outputArray, &outputPixels)
-            dispatch_semaphore_signal(semaphore)
+            dispatch_group_async(dispatchGroup, queue) {
+            grayScottPartialSolver(grayScottConstData, parameters, sectionIndexes[i], sectionIndexes[i + 1], &outputGS)
         }
     }
-    for i in 0..<solverQueues {
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
-    }
+    dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER)
+
+
+    
+
+    
+    var outputPixels = ImageBitmap()
+      var outputData_uv255 = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    var twoFiveFive:Float = 255.0 // Scalar multiplier to pass reference to.
+
+    // Set outputData_uv to u * 255 then convert to Int8 and assign to R and G values in image bitmap
+    vDSP_vsmul(outputGS.u_data, 1, &twoFiveFive , &outputData_uv255, 1, UInt(outputData_uv255.count))
+    vDSP_vfix8 (outputData_uv255, 1, &outputPixels.data + 1, 4, UInt(outputData_uv255.count))
+    // This could be a copy for less mem access
+    vDSP_vfix8 (outputData_uv255, 1, &outputPixels.data + 2, 4, UInt(outputData_uv255.count))
+    
+    vDSP_vsmul(outputGS.v_data, 1, &twoFiveFive , &outputData_uv255, 1, UInt(outputData_uv255.count))
+    vDSP_vfix8 (outputData_uv255, 1, &outputPixels.data + 3, 4, UInt(outputData_uv255.count))
     
     if stats {
-        println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!));
+        println("S  SOLVER:" + NSString(format: "%.6f", CFAbsoluteTimeGetCurrent() - startTime!));
     }
     ++solverstatsCount
     
-    return (outputArray, outputPixels)
+    return (outputGS, outputPixels)
 }
 
-private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: [GrayScottStruct], inout outputPixels:[PixelData]) {
+private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: GrayScottData) {
+    var intermediate = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    var intermediate2 = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    var zero = Float(0.0)
+    var one = Float(1.0)
+    let lenSqU = UInt(Constants.LENGTH_SQUARED)
+    vDSP_vsq(grayScottConstData.v_data, 1, &intermediate, 1, lenSqU)
+    vDSP_vmul(grayScottConstData.u_data, 1, intermediate, 1, &intermediate2, 1, lenSqU)
     
-    assert(startLine >= 0)
-    assert(endLine <= Constants.LENGTH)
-    assert(outputArray.count == Constants.LENGTH_SQUARED)
-    assert(grayScottConstData.count == Constants.LENGTH_SQUARED)
+    var du = parameters.dU
+    var dv = parameters.dV
+ 
+    let laplacianV = laplacian(grayScottConstData.v_data)
+    var deltaVa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    vDSP_vsma(laplacianV, 1, &dv, intermediate2, 1, &deltaVa, 1, lenSqU)
     
-    var index : Int = startLine * Constants.LENGTH
+    var k = 1 - parameters.k
+    vDSP_vsma(grayScottConstData.v_data, 1, &k, deltaVa, 1, &intermediate, 1, lenSqU)
+    vDSP_vclip(intermediate, 1, &zero, &one, &outputArray.v_data, 1, UInt(Constants.LENGTH_SQUARED))
     
-    for i in startLine ..< endLine
-    {
-        for j in 0 ..< Constants.LENGTH
-        {
-            let thisPixel = grayScottConstData[i * Constants.LENGTH + j]
-            let northPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let southPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let eastPixel = grayScottConstData[(i - 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
-            let westPixel = grayScottConstData[(i + 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
-            
-            let laplacianU = northPixel.u + southPixel.u + westPixel.u + eastPixel.u - (4.0 * thisPixel.u);
-            let laplacianV = northPixel.v + southPixel.v + westPixel.v + eastPixel.v - (4.0 * thisPixel.v);
-            let reactionRate = thisPixel.u * thisPixel.v * thisPixel.v;
-            
-            let deltaU : Double = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
-            let deltaV : Double = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
-            
-            let outputDataCell = GrayScottStruct(u: (thisPixel.u + deltaU).clip(), v: (thisPixel.v + deltaV).clip())
-            
-            let u_I = UInt8(outputDataCell.u * 255)
-            outputPixels[index].r = u_I
-            outputPixels[index].g = u_I
-            outputPixels[index].b = UInt8(outputDataCell.v * 255)
-            
-            
-            outputArray[index++] = outputDataCell
-        }
-    }
+    var negData: [Float] = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    vDSP_vneg(grayScottConstData.u_data, 1, &negData, 1, lenSqU)
+    
+    vDSP_vsadd(negData, 1, &one, &negData, 1, lenSqU)
+    //var deltaUa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    
+    let laplacianU = laplacian(grayScottConstData.u_data)
+    vDSP_vsmsb(laplacianU, 1, &du, intermediate2, 1, &intermediate, 1, lenSqU)
+    var f = parameters.f
+    vDSP_vsma(negData, 1, &f, intermediate, 1, &intermediate2, 1, lenSqU)
+    vDSP_vadd(intermediate2, 1, grayScottConstData.u_data, 1, &intermediate, 1, lenSqU)
+    vDSP_vclip(intermediate, 1, &zero, &one, &outputArray.u_data, 1, UInt(Constants.LENGTH_SQUARED))
 }

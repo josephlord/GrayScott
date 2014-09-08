@@ -16,7 +16,7 @@ func imageFromARGB32Bitmap(pixels:ImageBitmap, width:UInt, height:UInt)->NSImage
     let bitsPerComponent:UInt = 8
     let bitsPerPixel:UInt = 32
     
-    assert(pixels.data.count == Int(width * height))
+    assert(pixels.data.count == Int(width * height * 4))
 
     var data = pixels.data // Copy to mutable []
     let providerRef = CGDataProviderCreateWithCFData(

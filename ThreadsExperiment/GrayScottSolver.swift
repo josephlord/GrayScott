@@ -84,10 +84,10 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
 
 
     
-    
+
     
     var outputPixels = ImageBitmap()
-    var outputData_uv255 = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+      var outputData_uv255 = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     var twoFiveFive:Float = 255.0 // Scalar multiplier to pass reference to.
 
     // Set outputData_uv to u * 255 then convert to Int8 and assign to R and G values in image bitmap
@@ -108,35 +108,35 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
 }
 
 private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: GrayScottData) {
-    var reactionRateIntermediate = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
-    var reactionRate = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    var intermediate = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    var intermediate2 = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     var zero = Float(0.0)
     var one = Float(1.0)
     let lenSqU = UInt(Constants.LENGTH_SQUARED)
-    vDSP_vsq(grayScottConstData.v_data, 1, &reactionRateIntermediate, 1, lenSqU)
-    vDSP_vmul(grayScottConstData.u_data, 1, reactionRateIntermediate, 1, &reactionRate, 1, lenSqU)
+    vDSP_vsq(grayScottConstData.v_data, 1, &intermediate, 1, lenSqU)
+    vDSP_vmul(grayScottConstData.u_data, 1, intermediate, 1, &intermediate2, 1, lenSqU)
     
     var du = parameters.dU
     var dv = parameters.dV
  
     let laplacianV = laplacian(grayScottConstData.v_data)
     var deltaVa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
-    vDSP_vsma(laplacianV, 1, &dv, reactionRate, 1, &deltaVa, 1, lenSqU)
+    vDSP_vsma(laplacianV, 1, &dv, intermediate2, 1, &deltaVa, 1, lenSqU)
     
     var k = 1 - parameters.k
-    vDSP_vsma(grayScottConstData.v_data, 1, &k, deltaVa, 1, &outputArray.v_data, 1, lenSqU)
-    vDSP_vclip(outputArray.v_data, 1, &zero, &one, &outputArray.v_data, 1, UInt(Constants.LENGTH_SQUARED))
+    vDSP_vsma(grayScottConstData.v_data, 1, &k, deltaVa, 1, &intermediate, 1, lenSqU)
+    vDSP_vclip(intermediate, 1, &zero, &one, &outputArray.v_data, 1, UInt(Constants.LENGTH_SQUARED))
     
     var negData: [Float] = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     vDSP_vneg(grayScottConstData.u_data, 1, &negData, 1, lenSqU)
     
     vDSP_vsadd(negData, 1, &one, &negData, 1, lenSqU)
-    var deltaUa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    //var deltaUa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     
     let laplacianU = laplacian(grayScottConstData.u_data)
-    vDSP_vsmsb(laplacianU, 1, &du, reactionRate, 1, &deltaUa, 1, lenSqU)
+    vDSP_vsmsb(laplacianU, 1, &du, intermediate2, 1, &intermediate, 1, lenSqU)
     var f = parameters.f
-    vDSP_vsma(negData, 1, &f, deltaUa, 1, &outputArray.u_data, 1, lenSqU)
-    vDSP_vadd(outputArray.u_data, 1, grayScottConstData.u_data, 1, &outputArray.u_data, 1, lenSqU)
-    vDSP_vclip(outputArray.u_data, 1, &zero, &one, &outputArray.u_data, 1, UInt(Constants.LENGTH_SQUARED))
+    vDSP_vsma(negData, 1, &f, intermediate, 1, &intermediate2, 1, lenSqU)
+    vDSP_vadd(intermediate2, 1, grayScottConstData.u_data, 1, &intermediate, 1, lenSqU)
+    vDSP_vclip(intermediate, 1, &zero, &one, &outputArray.u_data, 1, UInt(Constants.LENGTH_SQUARED))
 }

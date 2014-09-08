@@ -24,28 +24,57 @@ public struct GrayScottParameters {
 
 private func laplacian(var initialData:[Float])->[Float] {
     var laplacian = [Float](count: initialData.count, repeatedValue: 0.0)
+    var laplacianB = laplacian
     let lenSqU = UInt(Constants.LENGTH_SQUARED)
     let len_missing_line:Int = Int(lenSqU - Constants.LENGTH)
     //initialData.withUnsafeBufferPointer { (initialDataBuffer:UnsafeBufferPointer<Float>)->() in
         var minusFour = Float(-4.0)
         vDSP_vsmul(initialData, 1, &minusFour, &laplacian, 1, lenSqU)
+    
+        //assert(laplacian[6] == -4.0)
         // Add West
-        vDSP_vadd(initialData, 1, &laplacian + 1, 1, &laplacian + 1, 1, lenSqU - 1)
+        vDSP_vadd(initialData, 1, &laplacian + 1, 1, &laplacianB + 1, 1, lenSqU - 1)
+        //assert(laplacianB[6] == -3.0)
+        laplacianB[0] = laplacian[0] + initialData[Constants.LENGTH_SQUARED - 1]
         // Should fix up wrapping (currently going to previous line other side.
         // Add East
-        vDSP_vadd(&initialData + 1, 1, &laplacian, 1, &laplacian, 1, lenSqU - 1)
+        vDSP_vadd(&initialData + 1, 1, &laplacianB, 1, &laplacian, 1, lenSqU - 1)
+        //assert(laplacian[6] == -2.0)
+        laplacian[lenSqU - 1] = laplacianB[lenSqU - 1] + initialData[0]
         // Should fix up wrapping (currently going to previous line other side.
         // North
-        vDSP_vadd(initialData, 1, &laplacian + Constants.LENGTH, 1, &laplacian + Constants.LENGTH, 1, lenSqU - Constants.LENGTH)
+        vDSP_vadd(initialData, 1, &laplacian + Constants.LENGTH, 1, &laplacianB + Constants.LENGTH, 1, lenSqU - Constants.LENGTH)
+        //assert(laplacianB[6] == -3.0)
         // vDSP_vadd(&initialData + len_missing_line, 1, laplacian, 1, &laplacian, 1, UInt(Constants.LENGTH))
-        vDSP_vadd(laplacian, 1, &initialData[len_missing_line], 1, &laplacian, 1, UInt(Constants.LENGTH))
+        vDSP_vadd(laplacian, 1, &initialData + len_missing_line, 1, &laplacianB, 1, UInt(Constants.LENGTH))
+        //assert(laplacianB[6] == -1.0)
         // South
-        vDSP_vadd(&initialData + Constants.LENGTH, 1, &laplacian, 1, &laplacian, 1, lenSqU - Constants.LENGTH)
-        vDSP_vadd(initialData, 1, &laplacian + len_missing_line, 1, &laplacian + len_missing_line, 1, UInt(Constants.LENGTH))
-        laplacian[0] += initialData[Constants.LENGTH_SQUARED - 1]
-        laplacian[lenSqU - 1] += initialData[0]
-    // }
+        vDSP_vadd(&initialData + Constants.LENGTH, 1, &laplacianB, 1, &laplacian, 1, lenSqU - Constants.LENGTH)
+        //assert(laplacian[6] == 0.0)
+        vDSP_vadd(initialData, 1, &laplacianB + len_missing_line, 1, &laplacian + len_missing_line, 1, UInt(Constants.LENGTH))
+        //assert(laplacian[6] == 0.0)
     
+    // }
+    for i in  0..<Constants.LENGTH {
+        let top = 0 == i
+        let bottom = Constants.LENGTH_MINUS_ONE == i
+        for j in 0 ..< Constants.LENGTH {
+            let left = j == 0
+            let right = j == Constants.LENGTH_MINUS_ONE
+            let index = i * Constants.LENGTH + j
+            let thisPixel = initialData[index]
+            let eastPixel = initialData[index + (right ? -j : 1)]
+            let westPixel = initialData[index + (left ? Constants.LENGTH_MINUS_ONE : -1)]
+            let northPixel = initialData[top ? Constants.LENGTH_SQUARED - Constants.LENGTH + j : index - Constants.LENGTH]
+            let southPixel = initialData[bottom ? j : index + Constants.LENGTH]
+            let compLaplacian = northPixel + southPixel + westPixel + eastPixel - (4.0 * thisPixel)
+            
+            if compLaplacian != laplacian[i * Constants.LENGTH + j] {
+                println("Laplacian error at line \(i) column \(j) comp \(compLaplacian) !> \(laplacian[i * Constants.LENGTH + j])")
+                
+            }
+        }
+    }
     return laplacian
 }
 

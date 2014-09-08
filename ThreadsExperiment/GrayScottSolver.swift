@@ -88,13 +88,7 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     var one = Float(1.0)
     let lenSqU = UInt(Constants.LENGTH_SQUARED)
     vDSP_vsq(grayScottConstData.v_data, 1, &reactionRateIntermediate, 1, lenSqU)
-    //vDSP_vmsa(grayScottConstData.u_data, 1, reactionRateIntermediate, 1, &zero, &reactionRate, 1, lenSqU)
     vDSP_vmul(grayScottConstData.u_data, 1, reactionRateIntermediate, 1, &reactionRate, 1, lenSqU)
- /*   for i in 0..<Constants.LENGTH_SQUARED {
-        if reactionRate[i] != grayScottConstData.u_data[i] * grayScottConstData.v_data[i] * grayScottConstData.v_data[i] {
-            println("reactionRate[\(i)] == \(reactionRate[i]) - Calc = \(grayScottConstData.u_data[i] * grayScottConstData.v_data[i] * grayScottConstData.v_data[i])")
-        }
-    }*/
     
     let laplacianU = laplacian(grayScottConstData.u_data)
     let laplacianV = laplacian(grayScottConstData.v_data)
@@ -110,8 +104,13 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     var k = parameters.k
     vDSP_vsma(grayScottConstData.v_data, 1, &k, deltaVa, 1, &outputGS.v_data, 1, lenSqU)
     
-    var negData = grayScottConstData.u_data
+    var negData: [Float] = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     vDSP_vneg(grayScottConstData.u_data, 1, &negData, 1, lenSqU)
+    for i in 0..<Constants.LENGTH_SQUARED {
+        if negData[i] + grayScottConstData.u_data[i] != Float(0.0) {
+            println("negation error at \(i)")
+        }
+    }
     vDSP_vsadd(negData, 1, &one, &negData, 1, lenSqU)
     var f = parameters.f
     vDSP_vsma(negData, 1, &f, deltaUa, 1, &outputGS.u_data, 1, lenSqU)

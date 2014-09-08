@@ -27,32 +27,22 @@ private func laplacian(var initialData:[Float])->[Float] {
     var laplacianB = laplacian
     let lenSqU = UInt(Constants.LENGTH_SQUARED)
     let len_missing_line:Int = Int(lenSqU - Constants.LENGTH)
-    //initialData.withUnsafeBufferPointer { (initialDataBuffer:UnsafeBufferPointer<Float>)->() in
         var minusFour = Float(-4.0)
         vDSP_vsmul(initialData, 1, &minusFour, &laplacian, 1, lenSqU)
-    
-        //assert(laplacian[6] == -4.0)
         // Add West
         vDSP_vadd(initialData, 1, &laplacian + 1, 1, &laplacianB + 1, 1, lenSqU - 1)
-        //assert(laplacianB[6] == -3.0)
         laplacianB[0] = laplacian[0] + initialData[Constants.LENGTH_SQUARED - 1]
         // Should fix up wrapping (currently going to previous line other side.
         // Add East
         vDSP_vadd(&initialData + 1, 1, &laplacianB, 1, &laplacian, 1, lenSqU - 1)
-        //assert(laplacian[6] == -2.0)
         laplacian[lenSqU - 1] = laplacianB[lenSqU - 1] + initialData[0]
         // Should fix up wrapping (currently going to previous line other side.
         // North
         vDSP_vadd(initialData, 1, &laplacian + Constants.LENGTH, 1, &laplacianB + Constants.LENGTH, 1, lenSqU - Constants.LENGTH)
-        //assert(laplacianB[6] == -3.0)
-        // vDSP_vadd(&initialData + len_missing_line, 1, laplacian, 1, &laplacian, 1, UInt(Constants.LENGTH))
         vDSP_vadd(laplacian, 1, &initialData + len_missing_line, 1, &laplacianB, 1, UInt(Constants.LENGTH))
-        //assert(laplacianB[6] == -1.0)
         // South
         vDSP_vadd(&initialData + Constants.LENGTH, 1, &laplacianB, 1, &laplacian, 1, lenSqU - Constants.LENGTH)
-        //assert(laplacian[6] == 0.0)
         vDSP_vadd(initialData, 1, &laplacianB + len_missing_line, 1, &laplacian + len_missing_line, 1, UInt(Constants.LENGTH))
-        //assert(laplacian[6] == 0.0)
     
     return laplacian
 }
@@ -66,7 +56,7 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
         startTime = CFAbsoluteTimeGetCurrent();
     }
 
-    var outputGS = grayScottConstData//GrayScottData()//[GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
+    var outputGS = GrayScottData()//[GrayScottStruct](count: grayScottConstData.count, repeatedValue: GrayScottStruct(u: 0, v: 0))
 
     
     let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
@@ -131,7 +121,6 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
     vDSP_vneg(grayScottConstData.u_data, 1, &negData, 1, lenSqU)
     
     vDSP_vsadd(negData, 1, &one, &negData, 1, lenSqU)
-    //var deltaUa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     
     let laplacianU = laplacian(grayScottConstData.u_data)
     vDSP_vsmsb(laplacianU, 1, &du, intermediate2, 1, &intermediate, 1, lenSqU)
@@ -139,4 +128,5 @@ private func grayScottPartialSolver(grayScottConstData: GrayScottData, parameter
     vDSP_vsma(negData, 1, &f, intermediate, 1, &intermediate2, 1, lenSqU)
     vDSP_vadd(intermediate2, 1, grayScottConstData.u_data, 1, &intermediate, 1, lenSqU)
     vDSP_vclip(intermediate, 1, &zero, &one, &outputArray.u_data, 1, UInt(Constants.LENGTH_SQUARED))
+
 }

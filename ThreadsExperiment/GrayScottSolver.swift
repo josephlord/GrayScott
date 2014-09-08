@@ -90,32 +90,34 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     vDSP_vsq(grayScottConstData.v_data, 1, &reactionRateIntermediate, 1, lenSqU)
     vDSP_vmul(grayScottConstData.u_data, 1, reactionRateIntermediate, 1, &reactionRate, 1, lenSqU)
     
-    let laplacianU = laplacian(grayScottConstData.u_data)
-    let laplacianV = laplacian(grayScottConstData.v_data)
-
-    var deltaUa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     var du = parameters.dU
     var dv = parameters.dV
-    vDSP_vsmsb(laplacianU, 1, &du, reactionRate, 1, &deltaUa, 1, lenSqU)
     
+
+    
+    
+    let laplacianV = laplacian(grayScottConstData.v_data)
     var deltaVa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     vDSP_vsma(laplacianV, 1, &dv, reactionRate, 1, &deltaVa, 1, lenSqU)
     
     var k = 1 - parameters.k
     vDSP_vsma(grayScottConstData.v_data, 1, &k, deltaVa, 1, &outputGS.v_data, 1, lenSqU)
+    vDSP_vclip(outputGS.v_data, 1, &zero, &one, &outputGS.v_data, 1, UInt(Constants.LENGTH_SQUARED))
     
     var negData: [Float] = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
     vDSP_vneg(grayScottConstData.u_data, 1, &negData, 1, lenSqU)
     
     vDSP_vsadd(negData, 1, &one, &negData, 1, lenSqU)
+    var deltaUa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
+    
+    let laplacianU = laplacian(grayScottConstData.u_data)
+    vDSP_vsmsb(laplacianU, 1, &du, reactionRate, 1, &deltaUa, 1, lenSqU)
     var f = parameters.f
     vDSP_vsma(negData, 1, &f, deltaUa, 1, &outputGS.u_data, 1, lenSqU)
     vDSP_vadd(outputGS.u_data, 1, grayScottConstData.u_data, 1, &outputGS.u_data, 1, lenSqU)
-    
-    
-    
     vDSP_vclip(outputGS.u_data, 1, &zero, &one, &outputGS.u_data, 1, UInt(Constants.LENGTH_SQUARED))
-    vDSP_vclip(outputGS.v_data, 1, &zero, &one, &outputGS.v_data, 1, UInt(Constants.LENGTH_SQUARED))
+    
+    
     
     var outputPixels = ImageBitmap()
     var outputData_uv255 = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
@@ -130,14 +132,10 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     vDSP_vsmul(outputGS.v_data, 1, &twoFiveFive , &outputData_uv255, 1, UInt(outputData_uv255.count))
     vDSP_vfix8 (outputData_uv255, 1, &outputPixels.data + 3, 4, UInt(outputData_uv255.count))
     
-    var outputData_v255 = outputGS.u_data
     if stats {
         println("S  SOLVER:" + NSString(format: "%.6f", CFAbsoluteTimeGetCurrent() - startTime!));
     }
     ++solverstatsCount
-    
-    var comparisonGrayScott = grayScottConstData
-    grayScottPartialSolver(grayScottConstData, parameters, 0, Constants.LENGTH - 1, &comparisonGrayScott)
     
     return (outputGS, outputPixels)
 }

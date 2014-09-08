@@ -54,27 +54,6 @@ private func laplacian(var initialData:[Float])->[Float] {
         vDSP_vadd(initialData, 1, &laplacianB + len_missing_line, 1, &laplacian + len_missing_line, 1, UInt(Constants.LENGTH))
         //assert(laplacian[6] == 0.0)
     
-    // }
-    for i in  0..<Constants.LENGTH {
-        let top = 0 == i
-        let bottom = Constants.LENGTH_MINUS_ONE == i
-        for j in 0 ..< Constants.LENGTH {
-            let left = j == 0
-            let right = j == Constants.LENGTH_MINUS_ONE
-            let index = i * Constants.LENGTH + j
-            let thisPixel = initialData[index]
-            let eastPixel = initialData[index + (right ? -j : 1)]
-            let westPixel = initialData[index + (left ? Constants.LENGTH_MINUS_ONE : -1)]
-            let northPixel = initialData[top ? Constants.LENGTH_SQUARED - Constants.LENGTH + j : index - Constants.LENGTH]
-            let southPixel = initialData[bottom ? j : index + Constants.LENGTH]
-            let compLaplacian = northPixel + southPixel + westPixel + eastPixel - (4.0 * thisPixel)
-            
-            if compLaplacian != laplacian[i * Constants.LENGTH + j] {
-                println("Laplacian error at line \(i) column \(j) comp \(compLaplacian) !> \(laplacian[i * Constants.LENGTH + j])")
-                
-            }
-        }
-    }
     return laplacian
 }
 
@@ -109,11 +88,15 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     var one = Float(1.0)
     let lenSqU = UInt(Constants.LENGTH_SQUARED)
     vDSP_vsq(grayScottConstData.v_data, 1, &reactionRateIntermediate, 1, lenSqU)
-    vDSP_vmsa(grayScottConstData.u_data, 1, reactionRateIntermediate, 1, &zero, &reactionRate, 1, lenSqU)
+    //vDSP_vmsa(grayScottConstData.u_data, 1, reactionRateIntermediate, 1, &zero, &reactionRate, 1, lenSqU)
+    vDSP_vmul(grayScottConstData.u_data, 1, reactionRateIntermediate, 1, &reactionRate, 1, lenSqU)
+ /*   for i in 0..<Constants.LENGTH_SQUARED {
+        if reactionRate[i] != grayScottConstData.u_data[i] * grayScottConstData.v_data[i] * grayScottConstData.v_data[i] {
+            println("reactionRate[\(i)] == \(reactionRate[i]) - Calc = \(grayScottConstData.u_data[i] * grayScottConstData.v_data[i] * grayScottConstData.v_data[i])")
+        }
+    }*/
+    
     let laplacianU = laplacian(grayScottConstData.u_data)
-    
-    
-    
     let laplacianV = laplacian(grayScottConstData.v_data)
 
     var deltaUa = [Float](count: Constants.LENGTH_SQUARED, repeatedValue: 0.0)
@@ -161,12 +144,12 @@ public func grayScottSolver(grayScottConstData: GrayScottData, parameters:GraySc
     var comparisonGrayScott = grayScottConstData
     grayScottPartialSolver(grayScottConstData, parameters, 0, Constants.LENGTH - 1, &comparisonGrayScott)
     
-    for i in 0..<Constants.LENGTH_SQUARED {
+ /*   for i in 0..<Constants.LENGTH_SQUARED {
         if comparisonGrayScott.v_data[i] + 0.0001 < outputGS.v_data[i] ||  comparisonGrayScott.v_data[i] - 0.0001 > outputGS.v_data[i]{
             println("solverstatsCount = \(solverstatsCount)")
-            println("u_data mismatch at position \(i) comp: \(comparisonGrayScott.v_data[i]) != \(outputGS.v_data[i]) - original data = \(grayScottConstData.v_data[i])")
+            println("v_data mismatch at position \(i) comp: \(comparisonGrayScott.v_data[i]) != \(outputGS.v_data[i]) - original data = \(grayScottConstData.v_data[i])")
         }
-    }
+    }*/
     
     return (outputGS, outputPixels)
 }

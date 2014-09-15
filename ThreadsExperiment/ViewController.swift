@@ -87,7 +87,7 @@ class ViewController: UIViewController
         renderer = GrayScottRenderer(grayScottData: grayScottData);
         renderer!.threadPriority = 0;
         
-        queue.addOperation(renderer);
+        queue.addOperation(renderer!);
     }
     
     @IBAction func sliderValueChangeHandler(sender: AnyObject)
@@ -146,7 +146,7 @@ class ViewController: UIViewController
         // this doesn't work because the completion block isn't executed in the main thread
         //solver.completionBlock = {self.didSolve(self.solver.getGrayScott())};
   
-        queue.addOperation(solver);
+        queue.addOperation(solver!);
     }
 
     private func renderGrayScott()

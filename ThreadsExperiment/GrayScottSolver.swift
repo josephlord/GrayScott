@@ -38,13 +38,19 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
     var sectionIndexes = map(0...solverQueues) { Int($0 * sectionSize) }
     sectionIndexes[solverQueues] = Constants.LENGTH
     let dispatchGroup = dispatch_group_create()
+
+    outputPixels.withUnsafeMutableBufferPointer { (inout outputPixelsBuffer:UnsafeMutableBufferPointer<PixelData>) -> () in
+    outputArray.withUnsafeMutableBufferPointer { (inout outputArrayBuffer:UnsafeMutableBufferPointer<GrayScottStruct>) -> () in
     for i in 0..<solverQueues {
             dispatch_group_async(dispatchGroup, queue) {
-            grayScottPartialSolver(grayScottConstData, parameters, sectionIndexes[i], sectionIndexes[i + 1], &outputArray, &outputPixels)
+            
+                
+            grayScottPartialSolver(grayScottConstData, parameters, sectionIndexes[i], sectionIndexes[i + 1], &outputArrayBuffer, &outputPixelsBuffer)
         }
     }
     dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER)
-    
+        
+}} // Stop using the unsafe mutable buffer pointers
     if stats {
         println("S  SOLVER:" + NSString(format: "%.6f", CFAbsoluteTimeGetCurrent() - startTime!));
     }
@@ -53,12 +59,16 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
     return (outputArray, outputPixels)
 }
 
-private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: [GrayScottStruct], inout outputPixels:[PixelData]) {
-    
+//private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: [GrayScottStruct], inout outputPixelsArray:[PixelData]) {
+
+private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], parameters: GrayScottParameters, startLine:Int, endLine:Int, inout outputArray: UnsafeMutableBufferPointer<GrayScottStruct>, inout outputPixels:UnsafeMutableBufferPointer<PixelData>) {
+
     assert(startLine >= 0)
     assert(endLine <= Constants.LENGTH)
     assert(outputArray.count == Constants.LENGTH_SQUARED)
     assert(grayScottConstData.count == Constants.LENGTH_SQUARED)
+    
+        
     for i in startLine ..< endLine
     {
         let top = 0 == i

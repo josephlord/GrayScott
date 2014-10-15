@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 Simon Gladman. All rights reserved.
 //
 
-import Foundation
 
 public struct PixelData {
     var a:UInt8 = 0

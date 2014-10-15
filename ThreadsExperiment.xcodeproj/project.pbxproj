@@ -162,7 +162,6 @@
 				BE623417198DFE2100C0A592 /* PixelData.swift */,
 			);
 			name = structs;
-			path = ThreadsExperiment;
 			sourceTree = "<group>";
 		};
 		BE0E5C59198CA26700395741 = {
@@ -195,6 +194,7 @@
 		BE0E5C64198CA26700395741 /* ThreadsExperiment */ = {
 			isa = PBXGroup;
 			children = (
+				3EF4B99B1991EA1D004FC621 /* structs */,
 				3E7AECD61997E5E700EFC5EC /* consts */,
 				BE0E5C67198CA26700395741 /* AppDelegate.swift */,
 				BE0E5C6C198CA26700395741 /* ViewController.swift */,
@@ -288,7 +288,6 @@
 			children = (
 				BE0E5C89198CD7B200395741 /* grayScottOperations */,
 				BE623414198D522D00C0A592 /* extensions */,
-				3EF4B99B1991EA1D004FC621 /* structs */,
 				BEE974A919A7DF44006B1208 /* image processing */,
 			);
 			name = "Common Code";

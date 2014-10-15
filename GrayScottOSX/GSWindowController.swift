@@ -62,9 +62,9 @@ class GSWindowController: NSWindowController {
                 OSAtomicIncrement32(&waitingFrames)
                 if waitingFrames < 3 {
                     dispatch_async(dispatch_get_main_queue()) {
-                        
-                            s.grayScottData = data
-                            s.imageView.image = imageFromARGB32Bitmap(pixelData, UInt(Constants.LENGTH), UInt(Constants.LENGTH))
+                        if let strongSelf = weakSelf {
+                            strongSelf.grayScottData = dataCopy
+                            strongSelf.imageView.image = imageFromARGB32Bitmap(pixelData, UInt(Constants.LENGTH), UInt(Constants.LENGTH))
                             if CFAbsoluteTimeGetCurrent() - lastFrameCountTime > 1.0 {
                                 println("Frame count = \(frameCount) Solve count: \(solveCount)")
                                 frameCount = 0
@@ -73,6 +73,7 @@ class GSWindowController: NSWindowController {
                             }
                             ++frameCount
                             OSAtomicDecrement32(&waitingFrames)
+                        }
                         }
                     } else { OSAtomicDecrement32(&waitingFrames) }
                 }

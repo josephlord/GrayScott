@@ -9,10 +9,10 @@
 import Foundation
 
 public struct GrayScottStruct {
-    var u : Double = 0.0;
-    var v : Double = 0.0;
+    var u : Float = 0.0;
+    var v :Float = 0.0;
     
-    init(u : Double, v: Double)
+    init(u :Float, v: Float)
     {
         self.u = u;
         self.v = v;

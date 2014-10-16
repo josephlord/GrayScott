@@ -8,9 +8,9 @@
 
 import Foundation
 
-extension Double
+extension Float
 {
-    func clip() -> Double
+    func clip() -> Float
     {
         if self < 0
         {
@@ -28,6 +28,6 @@ extension Double
     
     func format() -> String
     {
-        return NSString(format: "%.4f", Double(self));
+        return NSString(format: "%.4f", Float(self));
     }
 }

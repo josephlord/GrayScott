@@ -4,27 +4,27 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>GrayScottOSX.xcscheme</key>
+		<key>GrayScottOSX.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
-		<key>ThreadsExperiment-Optimised.xcscheme</key>
+		<key>ThreadsExperiment-Optimised.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>4</integer>
 		</dict>
-		<key>ThreadsExperiment.xcscheme</key>
+		<key>ThreadsExperiment.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>ThreadsExperimentTests-OSX.xcscheme</key>
+		<key>ThreadsExperimentTests-OSX.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
-		<key>ThreadsExperimentUnitTests.xcscheme</key>
+		<key>ThreadsExperimentUnitTests.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>1</integer>

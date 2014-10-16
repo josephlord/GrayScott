@@ -17,7 +17,7 @@ struct PixelData {
 }
 
 private let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
-private let bitmapInfo:CGBitmapInfo = CGBitmapInfo(CGImageAlphaInfo.PremultipliedFirst.toRaw())
+private let bitmapInfo:CGBitmapInfo = CGBitmapInfo(CGImageAlphaInfo.PremultipliedFirst.rawValue)
 
 private func imageFromARGB32Bitmap(pixels:[PixelData], width:UInt, height:UInt)->UIImage {
     let bitsPerComponent:UInt = 8
@@ -27,7 +27,7 @@ private func imageFromARGB32Bitmap(pixels:[PixelData], width:UInt, height:UInt)-
     let providerRef = CGDataProviderCreateWithCFData(NSData(bytes: &data, length: data.count * sizeof(PixelData)))
 
     let cgim = CGImageCreate(width, height, bitsPerComponent, bitsPerPixel, width * UInt(sizeof(PixelData)), rgbColorSpace,	bitmapInfo, providerRef, nil, true, kCGRenderingIntentDefault)
-    return UIImage(CGImage: cgim)
+    return UIImage(CGImage: cgim)!
 }
 
 private var statsCount = 0

@@ -14,6 +14,7 @@ public struct Constants
     static let LENGTH : Int = 70
     static let LENGTH_MINUS_ONE : Int = LENGTH - 1
     static let LENGTH_SQUARED : Int = LENGTH * LENGTH
+    static let LENGTH_CGFLOAT : CGFloat = CGFloat(LENGTH)
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {

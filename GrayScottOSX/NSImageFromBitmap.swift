@@ -36,5 +36,6 @@ func imageFromARGB32Bitmap(pixels:[PixelData], width:UInt, height:UInt)->NSImage
         true,
         kCGRenderingIntentDefault
     )
-    return NSImage(CGImage: cgim, size:NSSize(width: Constants.LENGTH, height: Constants.LENGTH))!
+    let size = NSSize(width: Constants.LENGTH_CGFLOAT, height: Constants.LENGTH_CGFLOAT)
+    return NSImage(CGImage: cgim, size: size)
 }

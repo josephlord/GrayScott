@@ -9,7 +9,7 @@
 import UIKit
 
 private let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
-private let bitmapInfo:CGBitmapInfo = CGBitmapInfo(CGImageAlphaInfo.NoneSkipFirst.toRaw())
+private let bitmapInfo:CGBitmapInfo = CGBitmapInfo(CGImageAlphaInfo.NoneSkipFirst.rawValue)
 
 func imageFromARGB32Bitmap(pixels:[PixelData], width:UInt, height:UInt)->UIImage {
     let bitsPerComponent:UInt = 8
@@ -35,5 +35,5 @@ func imageFromARGB32Bitmap(pixels:[PixelData], width:UInt, height:UInt)->UIImage
         true,
         kCGRenderingIntentDefault
     )
-    return UIImage(CGImage: cgim)
+    return UIImage(CGImage: cgim)!
 }

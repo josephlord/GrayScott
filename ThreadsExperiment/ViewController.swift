@@ -114,7 +114,7 @@ class ViewController: UIViewController
                         dispatch_async(dispatch_get_main_queue()) {
                             
                             s.grayScottData = data
-                            s.imageView.image = imageFromARGB32Bitmap(pixelData, UInt(Constants.LENGTH), UInt(Constants.LENGTH))
+                            s.imageView.image = imageFromARGB32Bitmap(pixelData, Constants.LENGTH, Constants.LENGTH)
                             let timeSinceReport = CFAbsoluteTimeGetCurrent() - lastFrameCountTime
                             if  timeSinceReport > 1.0 {
                                 println("Frame count = \(frameCount) Solve count: \(solveCount) in \(timeSinceReport) seconds")

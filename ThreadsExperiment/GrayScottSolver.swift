@@ -52,7 +52,7 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
         
 }} // Stop using the unsafe mutable buffer pointers
     if stats {
-        println("S  SOLVER:" + NSString(format: "%.6f", CFAbsoluteTimeGetCurrent() - startTime!));
+        println("S  SOLVER:" + (NSString(format: "%.6f", CFAbsoluteTimeGetCurrent() - startTime!) as String));
     }
     ++solverstatsCount
     

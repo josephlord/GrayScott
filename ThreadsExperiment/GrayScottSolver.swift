@@ -57,7 +57,7 @@ func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScott
     }
 
     if stats {
-        println("S  SOLVER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!));
+        println("S  SOLVER:" + (NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!) as String));
     }
     ++solverstatsCount
     return outputArray

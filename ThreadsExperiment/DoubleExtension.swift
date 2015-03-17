@@ -29,6 +29,6 @@ extension Double
     
     func format() -> String
     {
-        return NSString(format: "%.4f", Double(self));
+        return NSString(format: "%.4f", Double(self)) as String;
     }
 }

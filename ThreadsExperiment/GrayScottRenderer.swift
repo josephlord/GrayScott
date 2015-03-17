@@ -17,17 +17,17 @@ struct PixelData {
 }
 
 private let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
-private let bitmapInfo:CGBitmapInfo = CGBitmapInfo(CGImageAlphaInfo.PremultipliedFirst.toRaw())
+private let bitmapInfo:CGBitmapInfo = CGBitmapInfo(CGImageAlphaInfo.PremultipliedFirst.rawValue)
 
-private func imageFromARGB32Bitmap(pixels:[PixelData], width:UInt, height:UInt)->UIImage {
-    let bitsPerComponent:UInt = 8
-    let bitsPerPixel:UInt = 32
+private func imageFromARGB32Bitmap(pixels:[PixelData], width:Int, height:Int)->UIImage {
+    let bitsPerComponent:Int = 8
+    let bitsPerPixel:Int = 32
     
     var data = pixels // Copy to mutable []
     let providerRef = CGDataProviderCreateWithCFData(NSData(bytes: &data, length: data.count * sizeof(PixelData)))
 
-    let cgim = CGImageCreate(width, height, bitsPerComponent, bitsPerPixel, width * UInt(sizeof(PixelData)), rgbColorSpace,	bitmapInfo, providerRef, nil, true, kCGRenderingIntentDefault)
-    return UIImage(CGImage: cgim)
+    let cgim = CGImageCreate(width, height, bitsPerComponent, bitsPerPixel, width * sizeof(PixelData), rgbColorSpace,	bitmapInfo, providerRef, nil, true, kCGRenderingIntentDefault)
+    return UIImage(CGImage: cgim)!
 }
 
 private var statsCount = 0
@@ -52,9 +52,9 @@ func renderGrayScott(grayScottData:[GrayScottStruct])->UIImage
             pixelArray[index].b = UInt8(grayScottCell.v * 255)
         }
     }
-    let outputImage = imageFromARGB32Bitmap(pixelArray, UInt(Constants.LENGTH), UInt(Constants.LENGTH))
+    let outputImage = imageFromARGB32Bitmap(pixelArray, Constants.LENGTH, Constants.LENGTH)
     if stats {
-        println(" R RENDER:" + NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!));
+        println(" R RENDER:" + (NSString(format: "%.4f", CFAbsoluteTimeGetCurrent() - startTime!) as String));
     }
     ++statsCount
     return outputImage

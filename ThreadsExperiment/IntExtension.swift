@@ -8,6 +8,16 @@
 
 import Foundation
 
+func wrap(i:Int, max:Int)->Int {
+    if i < 0 {
+        return 0
+    } else if i > max {
+        return max
+    } else {
+        return i
+    }
+}
+
 extension Int
 {
     func wrap(max : Int) -> Int

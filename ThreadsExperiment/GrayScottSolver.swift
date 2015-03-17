@@ -36,10 +36,10 @@ func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScott
         for j in 0 ..< Constants.LENGTH
         {
             let thisPixel = grayScottConstData[i * Constants.LENGTH + j]
-            let northPixel = grayScottConstData[i * Constants.LENGTH + (j + 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let southPixel = grayScottConstData[i * Constants.LENGTH + (j - 1).wrap(Constants.LENGTH_MINUS_ONE)]
-            let eastPixel = grayScottConstData[(i - 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
-            let westPixel = grayScottConstData[(i + 1).wrap(Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            let northPixel = grayScottConstData[i * Constants.LENGTH + wrap(j + 1,Constants.LENGTH_MINUS_ONE)]
+            let southPixel = grayScottConstData[i * Constants.LENGTH + wrap(j - 1,Constants.LENGTH_MINUS_ONE)]
+            let eastPixel = grayScottConstData[wrap(i - 1,Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
+            let westPixel = grayScottConstData[wrap(i + 1,Constants.LENGTH_MINUS_ONE) * Constants.LENGTH + j]
             
             let laplacianU = northPixel.u + southPixel.u + westPixel.u + eastPixel.u - (4.0 * thisPixel.u);
             let laplacianV = northPixel.v + southPixel.v + westPixel.v + eastPixel.v - (4.0 * thisPixel.v);
@@ -48,7 +48,7 @@ func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:GrayScott
             let deltaU : Double = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
             let deltaV : Double = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
             
-            let outputPixel = GrayScottStruct(u: (thisPixel.u + deltaU).clip(), v: (thisPixel.v + deltaV).clip())
+            let outputPixel = GrayScottStruct(u: clip(thisPixel.u + deltaU), v: clip(thisPixel.v + deltaV))
             
             //outputArray.append(outputPixel)
             

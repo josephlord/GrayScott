@@ -55,7 +55,7 @@ class GSWindowController: NSWindowController {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             while (true) {
                 var pixelData:[PixelData]
-                (data, pixelData) = grayScottSolver(data, params)
+                (data, pixelData) = grayScottSolver(data, parameters: params)
                 let dataCopy = data
                 if let s = weakSelf {
                 OSAtomicIncrement32(&solveCount)
@@ -64,10 +64,10 @@ class GSWindowController: NSWindowController {
                     dispatch_async(dispatch_get_main_queue()) {
                         
                             s.grayScottData = data
-                            s.imageView.image = imageFromARGB32Bitmap(pixelData, UInt(Constants.LENGTH), UInt(Constants.LENGTH))
+                            s.imageView.image = imageFromARGB32Bitmap(pixelData, width: UInt(Constants.LENGTH), height: UInt(Constants.LENGTH))
                             let timeSinceReport = CFAbsoluteTimeGetCurrent() - lastFrameCountTime
                             if  timeSinceReport > 1.0 {
-                                println("Frame count = \(frameCount) Solve count: \(solveCount) in \(timeSinceReport) seconds")
+                                print("Frame count = \(frameCount) Solve count: \(solveCount) in \(timeSinceReport) seconds")
                                 frameCount = 0
                                 solveCount = 0
                                 lastFrameCountTime = CFAbsoluteTimeGetCurrent()

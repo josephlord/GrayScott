@@ -35,7 +35,7 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
     let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
     
     let sectionSize:Int = Constants.LENGTH/solverQueues
-    var sectionIndexes = map(0...solverQueues) { Int($0 * sectionSize) }
+    var sectionIndexes = (0...solverQueues).map { Int($0 * sectionSize) }
     sectionIndexes[solverQueues] = Constants.LENGTH
     let dispatchGroup = dispatch_group_create()
 
@@ -45,14 +45,14 @@ public func grayScottSolver(grayScottConstData: [GrayScottStruct], parameters:Gr
             dispatch_group_async(dispatchGroup, queue) {
             
                 
-            grayScottPartialSolver(grayScottConstData, parameters, sectionIndexes[i], sectionIndexes[i + 1], &outputArrayBuffer, &outputPixelsBuffer)
+            grayScottPartialSolver(grayScottConstData, parameters: parameters, startLine: sectionIndexes[i], endLine: sectionIndexes[i + 1], outputArray: &outputArrayBuffer, outputPixels: &outputPixelsBuffer)
         }
     }
     dispatch_group_wait(dispatchGroup, DISPATCH_TIME_FOREVER)
         
 }} // Stop using the unsafe mutable buffer pointers
     if stats {
-        println("S  SOLVER:" + (NSString(format: "%.6f", CFAbsoluteTimeGetCurrent() - startTime!) as String));
+        print("S  SOLVER:" + (NSString(format: "%.6f", CFAbsoluteTimeGetCurrent() - startTime!) as String));
     }
     ++solverstatsCount
     

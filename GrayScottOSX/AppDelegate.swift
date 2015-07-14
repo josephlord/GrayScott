@@ -21,18 +21,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     var windowController:GSWindowController!
 
-    func applicationDidFinishLaunching(aNotification: NSNotification?) {
+    func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
         windowController = GSWindowController(windowNibName: "GrayScottWindow")
         windowController.showWindow(self)
         window = windowController.window
     }
 
-    func applicationWillTerminate(aNotification: NSNotification?) {
+    func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
     }
 
-    func applicationDidHide(notification: NSNotification!) {
+    func applicationDidHide(notification: NSNotification) {
         // 
     }
 }

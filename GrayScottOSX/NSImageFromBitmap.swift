@@ -12,9 +12,9 @@ import AppKit
 private let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
 private let bitmapInfo:CGBitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.NoneSkipFirst.rawValue)
 
-func imageFromARGB32Bitmap(pixels:[PixelData], width:UInt, height:UInt)->NSImage {
-    let bitsPerComponent:UInt = 8
-    let bitsPerPixel:UInt = 32
+func imageFromARGB32Bitmap(pixels:[PixelData], width:Int, height:Int)->NSImage {
+    let bitsPerComponent:Int = 8
+    let bitsPerPixel:Int = 32
     
     assert(pixels.count == Int(width * height))
 
@@ -28,7 +28,7 @@ func imageFromARGB32Bitmap(pixels:[PixelData], width:UInt, height:UInt)->NSImage
         height,
         bitsPerComponent,
         bitsPerPixel,
-        width * UInt(sizeof(PixelData)),
+        width * Int(sizeof(PixelData)),
         rgbColorSpace,
         bitmapInfo,
         providerRef,
@@ -36,5 +36,5 @@ func imageFromARGB32Bitmap(pixels:[PixelData], width:UInt, height:UInt)->NSImage
         true,
         CGColorRenderingIntent.RenderingIntentDefault
     )
-    return NSImage(CGImage: cgim, size: NSSize(width: Constants.LENGTH, height: Constants.LENGTH))
+    return NSImage(CGImage: cgim!, size: NSSize(width: Constants.LENGTH, height: Constants.LENGTH))
 }

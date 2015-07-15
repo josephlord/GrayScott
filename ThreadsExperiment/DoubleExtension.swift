@@ -8,6 +8,22 @@
 
 import Foundation
 
+func clip(d:Double)->Double {
+    if d < 0
+    {
+        return 0.0;
+    }
+    else if d > 1.0
+    {
+        return 1.0;
+    }
+    else
+    {
+        return d;
+    }
+
+}
+
 extension Double
 {
     func clip() -> Double

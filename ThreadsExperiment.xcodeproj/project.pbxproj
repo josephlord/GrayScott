@@ -16,6 +16,12 @@
 		BE0E5C72198CA26700395741 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE0E5C71198CA26700395741 /* Images.xcassets */; };
 		BE0E5C7E198CA26700395741 /* ThreadsExperimentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0E5C7D198CA26700395741 /* ThreadsExperimentTests.swift */; };
 		BE0E5C8B198CD7F400395741 /* GrayScottSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0E5C8A198CD7F400395741 /* GrayScottSolver.swift */; };
+		BE10F9631B9FCF7800E538A3 /* DoNothingFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = BE10F9621B9FCF7800E538A3 /* DoNothingFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE10F96A1B9FCF7800E538A3 /* DoNothingFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE10F9601B9FCF7800E538A3 /* DoNothingFramework.framework */; settings = {ASSET_TAGS = (); }; };
+		BE10F9711B9FCF7800E538A3 /* DoNothingFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10F9701B9FCF7800E538A3 /* DoNothingFrameworkTests.swift */; };
+		BE10F9751B9FCF7800E538A3 /* DoNothingFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE10F9601B9FCF7800E538A3 /* DoNothingFramework.framework */; };
+		BE10F9761B9FCF7800E538A3 /* DoNothingFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BE10F9601B9FCF7800E538A3 /* DoNothingFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BE10F97F1B9FCFA000E538A3 /* UnnecessaryPublicClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE10F97E1B9FCFA000E538A3 /* UnnecessaryPublicClass.swift */; settings = {ASSET_TAGS = (); }; };
 		BE3A831219A651940037C740 /* ThreadsExperimentUnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3A831119A651940037C740 /* ThreadsExperimentUnitTests.swift */; };
 		BE3A831619A651B60037C740 /* GrayScottSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0E5C8A198CD7F400395741 /* GrayScottSolver.swift */; };
 		BE3A831819A652820037C740 /* GrayScottStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF4B99C1991EA37004FC621 /* GrayScottStruct.swift */; };
@@ -54,6 +60,27 @@
 			remoteGlobalIDString = BE0E5C61198CA26700395741;
 			remoteInfo = ThreadsExperiment;
 		};
+		BE10F96B1B9FCF7800E538A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE0E5C5A198CA26700395741 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE10F95F1B9FCF7800E538A3;
+			remoteInfo = DoNothingFramework;
+		};
+		BE10F96D1B9FCF7800E538A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE0E5C5A198CA26700395741 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BEE9747719A77B63006B1208;
+			remoteInfo = GrayScottOSX;
+		};
+		BE10F9731B9FCF7800E538A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE0E5C5A198CA26700395741 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE10F95F1B9FCF7800E538A3;
+			remoteInfo = DoNothingFramework;
+		};
 		BEE9748A19A77B63006B1208 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BE0E5C5A198CA26700395741 /* Project object */;
@@ -62,6 +89,20 @@
 			remoteInfo = GrayScottOSX;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BE10F97A1B9FCF7800E538A3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BE10F9761B9FCF7800E538A3 /* DoNothingFramework.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3E7AECD71997E5FE00EFC5EC /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -77,6 +118,13 @@
 		BE0E5C7C198CA26700395741 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BE0E5C7D198CA26700395741 /* ThreadsExperimentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsExperimentTests.swift; sourceTree = "<group>"; };
 		BE0E5C8A198CD7F400395741 /* GrayScottSolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrayScottSolver.swift; sourceTree = "<group>"; };
+		BE10F9601B9FCF7800E538A3 /* DoNothingFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DoNothingFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE10F9621B9FCF7800E538A3 /* DoNothingFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoNothingFramework.h; sourceTree = "<group>"; };
+		BE10F9641B9FCF7800E538A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BE10F9691B9FCF7800E538A3 /* DoNothingFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoNothingFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE10F9701B9FCF7800E538A3 /* DoNothingFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoNothingFrameworkTests.swift; sourceTree = "<group>"; };
+		BE10F9721B9FCF7800E538A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BE10F97E1B9FCFA000E538A3 /* UnnecessaryPublicClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnnecessaryPublicClass.swift; sourceTree = "<group>"; };
 		BE3A830D19A651940037C740 /* ThreadsExperimentUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThreadsExperimentUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE3A831019A651940037C740 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BE3A831119A651940037C740 /* ThreadsExperimentUnitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsExperimentUnitTests.swift; sourceTree = "<group>"; };
@@ -116,6 +164,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BE10F95C1B9FCF7800E538A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BE10F9661B9FCF7800E538A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE10F96A1B9FCF7800E538A3 /* DoNothingFramework.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE3A830A19A651940037C740 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -134,6 +197,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE10F9751B9FCF7800E538A3 /* DoNothingFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -175,6 +239,8 @@
 				BE3A832019A6600D0037C740 /* ThreadsExperimentTests-OSX */,
 				BEE9747919A77B63006B1208 /* GrayScottOSX */,
 				BEE9748C19A77B63006B1208 /* GrayScottOSXTests */,
+				BE10F9611B9FCF7800E538A3 /* DoNothingFramework */,
+				BE10F96F1B9FCF7800E538A3 /* DoNothingFrameworkTests */,
 				BE0E5C63198CA26700395741 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -188,6 +254,8 @@
 				BE3A831F19A6600D0037C740 /* ThreadsExperimentTests-OSX.xctest */,
 				BEE9747819A77B63006B1208 /* GrayScottOSX.app */,
 				BEE9748919A77B63006B1208 /* GrayScottOSXTests.xctest */,
+				BE10F9601B9FCF7800E538A3 /* DoNothingFramework.framework */,
+				BE10F9691B9FCF7800E538A3 /* DoNothingFrameworkTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -195,6 +263,7 @@
 		BE0E5C64198CA26700395741 /* ThreadsExperiment */ = {
 			isa = PBXGroup;
 			children = (
+				BEE974A919A7DF44006B1208 /* image processing */,
 				3E7AECD61997E5E700EFC5EC /* consts */,
 				BE0E5C67198CA26700395741 /* AppDelegate.swift */,
 				BE0E5C6C198CA26700395741 /* ViewController.swift */,
@@ -238,6 +307,25 @@
 			);
 			name = grayScottOperations;
 			path = ThreadsExperiment;
+			sourceTree = "<group>";
+		};
+		BE10F9611B9FCF7800E538A3 /* DoNothingFramework */ = {
+			isa = PBXGroup;
+			children = (
+				BE10F9621B9FCF7800E538A3 /* DoNothingFramework.h */,
+				BE10F9641B9FCF7800E538A3 /* Info.plist */,
+				BE10F97E1B9FCFA000E538A3 /* UnnecessaryPublicClass.swift */,
+			);
+			path = DoNothingFramework;
+			sourceTree = "<group>";
+		};
+		BE10F96F1B9FCF7800E538A3 /* DoNothingFrameworkTests */ = {
+			isa = PBXGroup;
+			children = (
+				BE10F9701B9FCF7800E538A3 /* DoNothingFrameworkTests.swift */,
+				BE10F9721B9FCF7800E538A3 /* Info.plist */,
+			);
+			path = DoNothingFrameworkTests;
 			sourceTree = "<group>";
 		};
 		BE3A830E19A651940037C740 /* ThreadsExperimentUnitTests */ = {
@@ -289,7 +377,6 @@
 				BE0E5C89198CD7B200395741 /* grayScottOperations */,
 				BE623414198D522D00C0A592 /* extensions */,
 				3EF4B99B1991EA1D004FC621 /* structs */,
-				BEE974A919A7DF44006B1208 /* image processing */,
 			);
 			name = "Common Code";
 			sourceTree = "<group>";
@@ -341,10 +428,20 @@
 				BEE974AA19A7DFCA006B1208 /* UIImageFromBitmap.swift */,
 			);
 			name = "image processing";
-			path = ThreadsExperiment;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		BE10F95D1B9FCF7800E538A3 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE10F9631B9FCF7800E538A3 /* DoNothingFramework.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		BE0E5C61198CA26700395741 /* ThreadsExperiment */ = {
@@ -380,6 +477,43 @@
 			name = ThreadsExperimentTests;
 			productName = ThreadsExperimentTests;
 			productReference = BE0E5C77198CA26700395741 /* ThreadsExperimentTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		BE10F95F1B9FCF7800E538A3 /* DoNothingFramework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BE10F9771B9FCF7800E538A3 /* Build configuration list for PBXNativeTarget "DoNothingFramework" */;
+			buildPhases = (
+				BE10F95B1B9FCF7800E538A3 /* Sources */,
+				BE10F95C1B9FCF7800E538A3 /* Frameworks */,
+				BE10F95D1B9FCF7800E538A3 /* Headers */,
+				BE10F95E1B9FCF7800E538A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DoNothingFramework;
+			productName = DoNothingFramework;
+			productReference = BE10F9601B9FCF7800E538A3 /* DoNothingFramework.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		BE10F9681B9FCF7800E538A3 /* DoNothingFrameworkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BE10F97B1B9FCF7800E538A3 /* Build configuration list for PBXNativeTarget "DoNothingFrameworkTests" */;
+			buildPhases = (
+				BE10F9651B9FCF7800E538A3 /* Sources */,
+				BE10F9661B9FCF7800E538A3 /* Frameworks */,
+				BE10F9671B9FCF7800E538A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BE10F96C1B9FCF7800E538A3 /* PBXTargetDependency */,
+				BE10F96E1B9FCF7800E538A3 /* PBXTargetDependency */,
+			);
+			name = DoNothingFrameworkTests;
+			productName = DoNothingFrameworkTests;
+			productReference = BE10F9691B9FCF7800E538A3 /* DoNothingFrameworkTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		BE3A830C19A651940037C740 /* ThreadsExperimentUnitTests */ = {
@@ -423,10 +557,12 @@
 				BEE9747419A77B63006B1208 /* Sources */,
 				BEE9747519A77B63006B1208 /* Frameworks */,
 				BEE9747619A77B63006B1208 /* Resources */,
+				BE10F97A1B9FCF7800E538A3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BE10F9741B9FCF7800E538A3 /* PBXTargetDependency */,
 			);
 			name = GrayScottOSX;
 			productName = GrayScottOSX;
@@ -458,6 +594,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Simon Gladman";
 				TargetAttributes = {
@@ -469,6 +606,13 @@
 						CreatedOnToolsVersion = 6.0;
 						DevelopmentTeam = PPUD3Y4398;
 						TestTargetID = BE0E5C61198CA26700395741;
+					};
+					BE10F95F1B9FCF7800E538A3 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					BE10F9681B9FCF7800E538A3 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = BEE9747719A77B63006B1208;
 					};
 					BE3A830C19A651940037C740 = {
 						CreatedOnToolsVersion = 6.0;
@@ -504,6 +648,8 @@
 				BE3A831E19A6600D0037C740 /* ThreadsExperimentTests-OSX */,
 				BEE9747719A77B63006B1208 /* GrayScottOSX */,
 				BEE9748819A77B63006B1208 /* GrayScottOSXTests */,
+				BE10F95F1B9FCF7800E538A3 /* DoNothingFramework */,
+				BE10F9681B9FCF7800E538A3 /* DoNothingFrameworkTests */,
 			);
 		};
 /* End PBXProject section */
@@ -519,6 +665,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BE0E5C75198CA26700395741 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BE10F95E1B9FCF7800E538A3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BE10F9671B9FCF7800E538A3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -584,6 +744,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BE10F95B1B9FCF7800E538A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE10F97F1B9FCFA000E538A3 /* UnnecessaryPublicClass.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BE10F9651B9FCF7800E538A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE10F9711B9FCF7800E538A3 /* DoNothingFrameworkTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BE3A830919A651940037C740 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -640,6 +816,21 @@
 			isa = PBXTargetDependency;
 			target = BE0E5C61198CA26700395741 /* ThreadsExperiment */;
 			targetProxy = BE0E5C78198CA26700395741 /* PBXContainerItemProxy */;
+		};
+		BE10F96C1B9FCF7800E538A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE10F95F1B9FCF7800E538A3 /* DoNothingFramework */;
+			targetProxy = BE10F96B1B9FCF7800E538A3 /* PBXContainerItemProxy */;
+		};
+		BE10F96E1B9FCF7800E538A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BEE9747719A77B63006B1208 /* GrayScottOSX */;
+			targetProxy = BE10F96D1B9FCF7800E538A3 /* PBXContainerItemProxy */;
+		};
+		BE10F9741B9FCF7800E538A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE10F95F1B9FCF7800E538A3 /* DoNothingFramework */;
+			targetProxy = BE10F9731B9FCF7800E538A3 /* PBXContainerItemProxy */;
 		};
 		BEE9748B19A77B63006B1208 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -818,6 +1009,95 @@
 			};
 			name = Release;
 		};
+		BE10F9781B9FCF7800E538A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = DoNothingFramework/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.human-friendly.DoNothingFramework";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		BE10F9791B9FCF7800E538A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = DoNothingFramework/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.human-friendly.DoNothingFramework";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		BE10F97C1B9FCF7800E538A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = DoNothingFrameworkTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.human-friendly.DoNothingFrameworkTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GrayScottOSX.app/Contents/MacOS/GrayScottOSX";
+			};
+			name = Debug;
+		};
+		BE10F97D1B9FCF7800E538A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = DoNothingFrameworkTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.human-friendly.DoNothingFrameworkTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GrayScottOSX.app/Contents/MacOS/GrayScottOSX";
+			};
+			name = Release;
+		};
 		BE3A831319A651940037C740 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -895,13 +1175,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = GrayScottOSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.humanfriendly.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -916,9 +1197,10 @@
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = GrayScottOSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.humanfriendly.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -998,6 +1280,22 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		BE10F9771B9FCF7800E538A3 /* Build configuration list for PBXNativeTarget "DoNothingFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE10F9781B9FCF7800E538A3 /* Debug */,
+				BE10F9791B9FCF7800E538A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		BE10F97B1B9FCF7800E538A3 /* Build configuration list for PBXNativeTarget "DoNothingFrameworkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE10F97C1B9FCF7800E538A3 /* Debug */,
+				BE10F97D1B9FCF7800E538A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		BE3A831519A651940037C740 /* Build configuration list for PBXNativeTarget "ThreadsExperimentUnitTests" */ = {
 			isa = XCConfigurationList;

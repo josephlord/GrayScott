@@ -12,6 +12,7 @@
 //
 
 import Foundation
+import DoNothingFramework
 
 public struct GrayScottParameters {
     public var f : Double
@@ -90,6 +91,8 @@ private func grayScottPartialSolver(grayScottConstData: [GrayScottStruct], param
             
             let deltaU : Double = parameters.dU * laplacianU - reactionRate + parameters.f * (1.0 - thisPixel.u);
             let deltaV : Double = parameters.dV * laplacianV + reactionRate - parameters.k * thisPixel.v;
+            
+            unnecessary.foo()
             
             let u = thisPixel.u + deltaU
             let clipped_u = clip(u)

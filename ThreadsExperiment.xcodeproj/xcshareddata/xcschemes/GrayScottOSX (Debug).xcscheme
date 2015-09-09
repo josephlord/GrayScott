@@ -38,6 +38,16 @@
                ReferencedContainer = "container:ThreadsExperiment.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BE10F9681B9FCF7800E538A3"
+               BuildableName = "DoNothingFrameworkTests.xctest"
+               BlueprintName = "DoNothingFrameworkTests"
+               ReferencedContainer = "container:ThreadsExperiment.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
